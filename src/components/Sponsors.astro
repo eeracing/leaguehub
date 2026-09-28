@@ -12,7 +12,7 @@ const visibleSponsors = [...sponsors].sort((a, b) => (a.order ?? 0) - (b.order ?
       {visibleSponsors.map((sponsor) => sponsor.url ?
         <a class="sponsor-card" href={sponsor.url} target="_blank" rel="noopener noreferrer" aria-label={`访问 ${sponsor.name} 网站（在新窗口打开）`}>
           <span class="sponsor-logo"><img src={sponsor.logo} alt={sponsor.name} width="190" height="68" loading="lazy" /></span>
-          <span class="sponsor-name">{sponsor.name}<span aria-hidden="true">↗</span></span>
+          <span class="sponsor-name">{sponsor.name}</span>
         </a> :
         <div class="sponsor-card">
           <span class="sponsor-logo"><img src={sponsor.logo} alt={sponsor.name} width="190" height="68" loading="lazy" /></span>

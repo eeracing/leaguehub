@@ -154,10 +154,9 @@ img { display: block; }
 .sponsors-grid { display: flex; max-width: 960px; flex-wrap: wrap; justify-content: center; gap: 16px; margin-inline: auto; }
 .sponsor-card { display: flex; min-width: 0; max-width: 220px; flex: 0 0 calc((100% - 48px) / 4); flex-direction: column; border: 1px solid transparent; transition: border-color .18s ease; }
 a.sponsor-card:hover { border-color: var(--line); }
-.sponsor-logo { display: grid; height: 104px; place-items: center; background: #e5e6e7; }
-.sponsor-logo img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
-.sponsor-name { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 8px 12px; color: var(--faint); font-size: 11px; font-weight: 600; text-align: center; }
-.sponsor-name span { color: var(--faint); font-size: 13px; }
+.sponsor-logo { display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); height: 104px; place-items: center; overflow: hidden; }
+.sponsor-logo img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; object-position: center; }
+.sponsor-name { display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 12px; color: var(--faint); font-size: 11px; font-weight: 600; text-align: center; }
 
 /* 锦标赛页 */
 .section-nav { position: sticky; top: 72px; z-index: 10; height: 50px; background: color-mix(in srgb, var(--page) 94%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
