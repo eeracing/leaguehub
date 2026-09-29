@@ -1,0 +1,12 @@
+---
+import type { SeriesDocument } from '../lib/documents';
+
+interface Props {
+  document: Pick<SeriesDocument, 'version' | 'effectiveDate'>;
+}
+const { document } = Astro.props;
+---
+{(document.version || document.effectiveDate) && <p class="document-metadata">
+  {document.version && <span>版本 {document.version}</span>}
+  {document.effectiveDate && <span>生效日期 <time datetime={document.effectiveDate}>{document.effectiveDate}</time></span>}
+</p>}

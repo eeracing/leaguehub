@@ -1,0 +1,39 @@
+---
+import DocumentMetadata from '../../../../components/DocumentMetadata.astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getSeriesConfigs } from '../../../../lib/data';
+import { getSeriesDocuments } from '../../../../lib/documents';
+
+export function getStaticPaths() {
+  return getSeriesConfigs().flatMap((series) => getSeriesDocuments(series.slug).map((document) => ({
+    params: { series: series.slug, document: document.slug },
+    props: { series, document },
+  })));
+}
+
+const { series, document } = Astro.props;
+const Content = document.markdown.Content;
+const headings = document.markdown.getHeadings();
+const minimumDepth = Math.min(...headings.map((heading) => heading.depth));
+---
+<BaseLayout title={`${document.title} · ${series.name}`} description={document.summary ?? `${series.name}赛事文档：${document.title}`}>
+  <header class="page-header document-header">
+    <div class="shell">
+      <a class="text-link document-back" href={`/racing/${series.slug}#documents`}>← 返回赛事 · {series.name}</a>
+      <h1>{document.title}</h1>
+      {document.summary && <p class="document-summary">{document.summary}</p>}
+      <DocumentMetadata document={document} />
+    </div>
+  </header>
+  <div class:list={['content-section shell document-layout', { 'document-layout-with-toc': headings.length > 0 }]}>
+    {headings.length > 0 && <nav class="document-toc" aria-label="章节目录">
+      <h2>章节目录</h2>
+      <ul>
+        {headings.map((heading) => <li style={`--toc-depth: ${heading.depth - minimumDepth}`}>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>)}
+      </ul>
+    </nav>}
+    <article class="series-info document-content" aria-label={document.title}><Content /></article>
+  </div>
+</BaseLayout>

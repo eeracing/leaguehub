@@ -9,6 +9,7 @@ The template includes:
 - **League home page:** Shows series, recent results, and upcoming races.
 - **Sponsors:** Shows configurable sponsor logos and links at the bottom of every page.
 - **Series pages:** Show schedules, championship standings, the latest race results, and optional series information.
+- **Series documents:** Discover Markdown files and generate reading pages with a table of contents, version, and effective date.
 - **Race result pages:** Show race, qualifying, and practice results, including pole position and fastest lap data.
 - **Automatic points calculation:** Applies configurable scoring rules and supports position penalties, points deductions, and disqualifications.
 - **Multiple series and static builds:** Add a series by adding configuration and data; navigation and pages are generated at build time.
@@ -47,6 +48,7 @@ When publishing at a different domain, change only `site` in `astro.config.mjs`.
 | `series/<slug>/config.ts` | Series name, route, scoring system, and optional season name, order, visibility, display overrides, logo, and certificate range |
 | `series/<slug>/series.json` | Car class (`carClass`) and ordered schedule (`rounds`) |
 | `series/<slug>/info.md` | Optional series introduction and rules, displayed on the site |
+| `series/<slug>/documents/*.md` | Optional series documents, automatically generated as standalone display pages |
 | `series/<slug>/eventresult-*.json` | Unmodified iRacing race result API responses |
 | `series/<slug>/penalties/<roundId>.json` | Optional stewarding decisions for a round |
 
@@ -63,6 +65,36 @@ Put series logos in `public/series/` and reference them with a site-root path, s
 The `sponsors` array in `config/sponsors.ts` controls the partner section at the bottom of every page. Each entry needs `name` and `logo`; `url` and numeric `order` are optional (lower values appear first). Put logo files in `public/sponsors/` and reference them with paths such as `/sponsors/example.svg`. Each sponsor uses one logo and the same light gray panel in both site themes. Cards with a URL are clickable; an empty array hides the entire section. Replace the three `DEMO` entries and logos before publishing your league site.
 
 Use `info.md` for the league's purpose, entry requirements, format, cars, prizes, broadcasts, and rules. When the file exists, the series page displays a “Series information” section and a link to it in the page navigation. Scoring rules and other conditions used in calculations must still be defined in structured configuration rather than only in prose.
+
+### Series documents
+
+Keep `info.md` as the introduction on the series page. Put separately shared guides, announcements, or rule descriptions in `series/<slug>/documents/<document-name>.md`; no configuration or manual route registration is needed. For example:
+
+```markdown
+---
+title: Series reading guide
+summary: Where to find the series information.
+order: 10
+version: "1.0"
+effectiveDate: "2026-07-01"
+---
+
+## Series information
+
+Write the document here.
+
+### Reading links
+
+Write the section here.
+```
+
+`title` is required and must be a nonempty string. `summary`, `version`, and `effectiveDate` are optional nonempty strings. Quote `version` to prevent YAML from interpreting it as a number. `effectiveDate` must be a quoted, valid `YYYY-MM-DD` date; it is displayed as written without time zone conversion and does not schedule publication or affect calculations. `order` is an optional finite number, defaulting to `0`; lower values appear first, with filename order breaking ties. Invalid metadata reports the file path during the build.
+
+The build generates `/racing/<slug>/documents/<document-name>` without the `.md` extension. Use stable lowercase filenames with hyphens where possible. Only `.md` files directly inside `documents/` are discovered. Series with documents display a “赛事文档” navigation link and document list; both are absent when there are no documents. Document pages are generated for hidden series too and remain accessible through direct links.
+
+Document pages share the site's navigation, themes, and footer, display the summary and optional metadata, and link back to the series. Markdown headings automatically form a table of contents using Astro's generated anchors, including unique anchors for repeated headings. Documents without headings omit the contents navigation. Start body headings at `##`, since the page already displays the document title. On phones, contents appear before the body; wide tables and code blocks scroll within their own area.
+
+Documents and `info.md` only display content and do not change points, penalties, or other race calculations. After adding, editing, or deleting documents, run `npm run check` and `npm run build`, then use `npm run preview` to inspect the series page, document links, section anchors, and mobile layout. `series/demo-gt3/documents/` includes a full metadata example and a short announcement.
 
 ### Schedule and result files
 
@@ -110,11 +142,11 @@ Position changes and disqualifications take effect before points are calculated.
 ### Add a series
 
 1. Create `series/<slug>/` and use an existing series as a guide for its default-exported `config.ts`. Make sure `slug` matches the directory name. If you need a logo, put it in `public/series/` and reference it from the configuration.
-2. Add `series.json` with `carClass` and `rounds`. Add `info.md` if you want an introduction.
+2. Add `series.json` with `carClass` and `rounds`. Add `info.md` if you want an introduction, and `documents/*.md` for standalone documents.
 3. Put the original `eventresult-*.json` files for completed races in the series directory and set `resultFile` on the corresponding rounds. Add `penalties/<roundId>.json` files if needed.
 4. Run `npm run build` and inspect the generated pages.
 
-`src/lib/data.ts` automatically discovers `series/*/config.ts`; pages also read an optional `info.md` from the same directory. Navigation, the home page series list, recent results, and upcoming races include visible series, while series pages and result pages for completed races are generated for every series during the build.
+`src/lib/data.ts` automatically discovers `series/*/config.ts`; pages also read an optional `info.md` from the same directory, and `src/lib/documents.ts` discovers `documents/*.md`. Navigation, the home page series list, recent results, and upcoming races include visible series, while series pages, document pages, and result pages for completed races are generated for every series during the build.
 
 ### Remove or archive a series
 

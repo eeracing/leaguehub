@@ -9,6 +9,7 @@ LeagueHub 是一个开箱即用的 iRacing 联赛网站模板。它基于 Astro 
 - **联赛首页**：展示系列赛、最新赛果和接下来的比赛。
 - **合作伙伴**：在每页底部展示可配置的赞助商 Logo 和链接。
 - **系列赛页面**：展示赛程、锦标赛积分榜、最新比赛结果及可选的赛事介绍。
+- **赛事文档**：自动发现 Markdown 文档，生成带章节目录、版本与生效日期的独立阅读页面。
 - **比赛结果页面**：分别展示正赛、排位赛和练习赛成绩，并统计杆位、最快圈等数据。
 - **自动计算积分**：按可配置的积分规则汇总车手成绩，支持名次调整、扣分和取消资格等处罚。
 - **多赛事与静态构建**：新增系列赛只需添加配置和数据；构建时自动生成导航及对应页面。
@@ -47,6 +48,7 @@ npm run build
 | `series/<slug>/config.ts` | 系列赛名称、路由、积分规则及可选的赛季名称、展示顺序、可见状态、展示覆盖、Logo 和证书范围 |
 | `series/<slug>/series.json` | 车辆组别 `carClass` 与按顺序排列的赛程 `rounds` |
 | `series/<slug>/info.md` | 可选的赛事介绍和规则说明，仅用于展示 |
+| `series/<slug>/documents/*.md` | 可选的赛事文档，自动生成独立页面，仅用于展示 |
 | `series/<slug>/eventresult-*.json` | 未经修改的 iRacing 比赛结果 API 响应 |
 | `series/<slug>/penalties/<roundId>.json` | 可选的该轮赛事仲裁决定 |
 
@@ -63,6 +65,36 @@ Logo 资源放在 `public/series/`，在系列赛配置中使用站点根路径�
 每页底部的合作伙伴由 `config/sponsors.ts` 中的 `sponsors` 数组控制。每项填写 `name` 和 `logo`，可选填 `url` 与数值 `order`（越小越靠前）；图片放在 `public/sponsors/`，用 `/sponsors/文件名.svg` 引用。每家只需一份 Logo，所有 Logo 在两种站点主题下使用统一的浅灰底板。有 `url` 时卡片可点击；数组为空时整个区域隐藏。仓库中的三个 `DEMO` 项及 Logo 仅供预览，上线前请替换。
 
 `info.md` 可写联盟宗旨、报名条件、赛制、车辆、奖励、直播和规则。存在该文件时，系列赛页面自动显示“赛事信息”及页内导航。用于计算的积分规则或条件仍须写在结构化配置中，不能只写在介绍文字里。
+
+### 赛事文档
+
+保留 `info.md` 作为赛事主页介绍。需要单独分享的资料、公告或规则说明，放在 `series/<slug>/documents/<文档名>.md`，不需要修改配置或手工注册路由。例如：
+
+```markdown
+---
+title: 赛事资料阅读指南
+summary: 介绍赛事资料的阅读入口。
+order: 10
+version: "1.0"
+effectiveDate: "2026-07-01"
+---
+
+## 赛事资料
+
+这里填写正文。
+
+### 阅读入口
+
+这里填写章节内容。
+```
+
+`title` 必填，为非空字符串；`summary`、`version` 和 `effectiveDate` 可省略，填写时须为非空字符串。`version` 请加引号，避免 YAML 将版本号解释为数值。`effectiveDate` 使用带引号的 `YYYY-MM-DD` 有效日期，按原值展示，不做时区转换；它不会控制发布时间或计算生效时点。`order` 为可选有限数值，默认 `0`，越小越靠前；同序按文件名排序。无效元数据会在构建时报告文件路径。
+
+构建自动生成 `/racing/<slug>/documents/<文档名>`，文件名不含 `.md`，建议使用稳定的英文小写与连字符。仅发现 `documents/` 直属的 `.md` 文件。有文档时，赛事主页显示“赛事文档”页内导航与列表；目录不存在或没有文档时不显示。隐藏赛事的文档页仍会生成，可通过直达链接访问。
+
+文档页复用站点导航、主题和页脚，显示摘要及可选元数据，并提供返回赛事链接。正文 Markdown 标题自动生成章节目录，重复标题也使用 Astro 生成的独立锚点；无标题时隐藏目录。页面已有文档标题，正文建议从 `##` 开始。手机上目录放在正文前，表格和代码块可在各自区域横向滚动。
+
+文档与 `info.md` 均只用于内容展示，不改变积分、处罚或任何赛事计算。新增、编辑或删除文档后运行 `npm run check` 和 `npm run build`，再用 `npm run preview` 检查赛事主页、文档链接、章节跳转与手机布局。仓库的 `series/demo-gt3/documents/` 包含完整元数据与精简公告两个示例。
 
 ### 赛程与结果文件
 
@@ -110,11 +142,11 @@ certificates: 'all',       // 所有取得正式名次的车手
 ### 添加
 
 1. 新建 `series/<slug>/`，参照现有赛事添加默认导出的 `config.ts`，确保 `slug` 与目录名一致。需要 Logo 时，将资源放入 `public/series/` 并在配置中引用。
-2. 添加 `series.json`，填写 `carClass` 和 `rounds`；需要介绍时添加 `info.md`。
+2. 添加 `series.json`，填写 `carClass` 和 `rounds`；需要介绍时添加 `info.md`，需要独立文档时添加 `documents/*.md`。
 3. 将已完成比赛的原始 `eventresult-*.json` 放入该目录，并在对应轮次设置 `resultFile`。如有处罚，再添加 `penalties/<roundId>.json`。
 4. 运行 `npm run build`，检查生成的页面。
 
-`src/lib/data.ts` 自动发现 `series/*/config.ts`；页面还会读取同目录可选的 `info.md`。可见赛事的导航、首页赛事列表、最新赛果、后续比赛，以及所有赛事的系列赛页和已有比赛的结果页均随构建生成，无需修改全局配置。
+`src/lib/data.ts` 自动发现 `series/*/config.ts`；页面还会读取同目录可选的 `info.md`，`src/lib/documents.ts` 自动发现 `documents/*.md`。可见赛事的导航、首页赛事列表、最新赛果、后续比赛，以及所有赛事的系列赛页、文档页和已有比赛的结果页均随构建生成，无需修改全局配置。
 
 ### 删除或归档
 

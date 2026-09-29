@@ -1,11 +1,13 @@
 ---
 import type { MarkdownInstance } from 'astro';
+import DocumentMetadata from '../../components/DocumentMetadata.astro';
 import RaceResultsTable from '../../components/RaceResultsTable.astro';
 import ScheduleTable from '../../components/ScheduleTable.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import StandingsTable from '../../components/StandingsTable.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getSeriesConfigs, getSeriesView } from '../../lib/data';
+import { getSeriesDocuments } from '../../lib/documents';
 
 const infoModules = import.meta.glob<MarkdownInstance<Record<string, unknown>>>('../../../series/*/info.md', { eager: true });
 
@@ -15,6 +17,7 @@ export function getStaticPaths() {
 
 const { seriesConfig } = Astro.props;
 const series = getSeriesView(seriesConfig);
+const documents = getSeriesDocuments(series.config.slug);
 const seasonName = series.config.seasonName?.trim();
 const infoPath = `../../../series/${series.config.slug}/info.md`;
 const SeriesInfo = Object.hasOwn(infoModules, infoPath) ? infoModules[infoPath].Content : undefined;
@@ -38,6 +41,7 @@ const SeriesInfo = Object.hasOwn(infoModules, infoPath) ? infoModules[infoPath].
       {series.latestRace && series.latestRound && <a href="#results">比赛结果</a>}
       <a href="#schedule">赛程</a>
       {SeriesInfo && <a href="#info">赛事信息</a>}
+      {documents.length > 0 && <a href="#documents">赛事文档</a>}
     </div>
   </nav>
 
@@ -64,5 +68,21 @@ const SeriesInfo = Object.hasOwn(infoModules, infoPath) ? infoModules[infoPath].
         <div class="series-info"><SeriesInfo /></div>
       </div>
     </div>
+  </section>}
+
+  {documents.length > 0 && <section class="content-section shell" id="documents">
+    <SectionHeading title="赛事文档" />
+    <ul class="document-list">
+      {documents.map((document) => <li>
+        <a class="document-card" href={document.href}>
+          <div>
+            <h3>{document.title}</h3>
+            {document.summary && <p class="document-summary">{document.summary}</p>}
+            <DocumentMetadata document={document} />
+          </div>
+          <span class="row-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>)}
+    </ul>
   </section>}
 </BaseLayout>
