@@ -31,9 +31,16 @@ function penaltyLabel(penalty: RacePenalty): string {
       const penalties = race.penalties.filter((penalty) => penalty.driverId === result.driverId);
       const score = race.championshipPoints.find((entry) => entry.driverId === result.driverId);
       const hasPositionPenalty = penalties.some((penalty) => penalty.type === 'position');
+      const crown = result.status !== 'disqualified' ? ({ 1: 'gold', 2: 'silver', 3: 'bronze' } as const)[result.position] : undefined;
       return <tr class:list={{ 'has-penalty': penalties.length > 0 }}>
         <td class="pos">
-          <strong>{result.status === 'disqualified' ? '取消资格' : result.position > 0 ? result.position : '—'}</strong>
+          <strong class="race-position">
+            {crown && <svg class:list={['podium-crown', crown]} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M3 6 7.5 10.5 12 3 16.5 10.5 21 6 18.5 17H5.5Z" />
+              <path d="M6 20H18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>}
+            {result.status === 'disqualified' ? '取消资格' : result.position > 0 ? result.position : '—'}
+          </strong>
           {hasPositionPenalty && <small class="position-adjustment">原第 {result.finishPosition} 名</small>}
           {seriesSlug && certificateIds.has(result.driverId) && <a class="certificate-link" href={certificateUrl(seriesSlug, race.roundId, result.driverId)} target="_blank" rel="noopener" aria-label={`在新标签页查看${result.driver}第${result.position}名证书 PDF`}>查看证书</a>}
         </td>
@@ -55,3 +62,11 @@ function penaltyLabel(penalty: RacePenalty): string {
     })}</tbody>
   </table>
 </div>
+
+<style>
+  .race-position { display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+  .podium-crown { width: 18px; height: 18px; flex: 0 0 18px; fill: currentColor; }
+  .podium-crown.gold { color: #d9a528; }
+  .podium-crown.silver { color: #a8b2c1; }
+  .podium-crown.bronze { color: #bb7c48; }
+</style>
