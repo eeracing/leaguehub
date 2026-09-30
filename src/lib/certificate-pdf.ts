@@ -105,7 +105,7 @@ export async function createCertificatePdf(series: SeriesConfig, round: Round, r
   centeredFittedText(document, `在 ${round.name} 正赛中`, 460, 670, 36, 14, 10, INK);
 
   document.strokeColor('#dce2eb').lineWidth(1).moveTo(72, 500).lineTo(720, 500).stroke();
-  document.fontSize(9).fillColor(MUTED).text('比赛日期', 70, 513, { width: 205, align: 'center' });
+  document.fontSize(9).fillColor(MUTED).text('比赛时间', 70, 513, { width: 205, align: 'center' });
   document.fontSize(9).fillColor(MUTED).text('赛道', 294, 513, { width: 205, align: 'center' });
   document.fontSize(9).fillColor(MUTED).text('参赛车辆', 518, 513, { width: 205, align: 'center' });
   textWithin(document, formatDate(round.date), 70, 531, 205, 12, 9, INK, 'center');

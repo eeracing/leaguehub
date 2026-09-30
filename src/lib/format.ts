@@ -5,6 +5,9 @@ export function formatDate(date: string, options: Intl.DateTimeFormatOptions = {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
     ...options,
     timeZone: config.site.timeZone,
   }).format(new Date(date));
