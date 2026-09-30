@@ -155,7 +155,7 @@ img { display: block; }
 .sponsors-grid { display: flex; max-width: 960px; flex-wrap: wrap; justify-content: center; gap: 16px; margin-inline: auto; }
 .sponsor-card { display: flex; min-width: 0; max-width: 220px; flex: 0 0 calc((100% - 48px) / 4); flex-direction: column; border: 1px solid transparent; transition: border-color .18s ease; }
 a.sponsor-card:hover { border-color: var(--line); }
-.sponsor-logo { display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); height: 104px; place-items: center; overflow: hidden; }
+.sponsor-logo { display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); height: 104px; place-items: center; padding: 12px 16px; overflow: hidden; background: #eeede8; }
 .sponsor-logo img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; object-position: center; }
 .sponsor-name { display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 12px; color: var(--faint); font-size: 11px; font-weight: 600; text-align: center; }
 
@@ -369,7 +369,7 @@ tbody tr { transition: background .15s ease; }
   .championship-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
   .championship-header h1 { font-size: clamp(28px, 8vw, 38px); }
   .sponsors-section { padding-block: 36px 42px; }
-  .sponsor-logo { height: 84px; }
+  .sponsor-logo { height: 84px; padding: 10px 12px; }
   .championship-card-top { align-items: flex-start; flex-direction: column; gap: 20px; min-height: 0; }
   .championship-card-logo { width: 124px; height: 124px; flex-basis: auto; }
 }
