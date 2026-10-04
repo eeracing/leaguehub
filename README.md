@@ -49,12 +49,24 @@ The favicon is a separate static image in `public/`. Set its path with `site.fav
 | `config/points.ts` | Shared scoring rules for finishing positions, pole position, fastest lap, and optional custom bonuses |
 | `series/<slug>/config.ts` | Series name, route, scoring system, and optional season name, order, visibility, display overrides, logo, and certificate range |
 | `series/<slug>/series.json` | Car class (`carClass`) and ordered schedule (`rounds`) |
+| `series/<slug>/drivers.json` | Optional registered driver names, keyed by iRacing `cust_id` |
 | `series/<slug>/info.md` | Optional series introduction and rules, displayed on the site |
 | `series/<slug>/documents/*.md` | Optional series documents, automatically generated as standalone display pages |
 | `series/<slug>/eventresult-*.json` | Unmodified iRacing race result API responses |
 | `series/<slug>/penalties/<roundId>.json` | Optional stewarding decisions for a round |
 
 Each series `config.ts` must export a default configuration with `id`, `name`, `shortName`, `slug`, and `pointsSystem`. The `slug` must match the directory name, and `pointsSystem` must reference a key in `config/points.ts`. Use `display` to override the site-wide table options. Do not enter race result rows manually in the configuration.
+
+To display registered names instead of iRacing names, add an optional `drivers.json` to the series directory:
+
+```json
+{
+  "99000001": "张三",
+  "99000002": "李四"
+}
+```
+
+Keys are the drivers' iRacing `cust_id` values as strings; values can be Chinese names, English names, or nicknames. The demo contains fictional examples; replace them with your registrations. Names are trimmed, and blank or non-string values cause a build error. Drivers without an entry retain their original `display_name`; omit the file to keep all original names. The mapping applies to every round in that series, including race, qualifying and practice results, standings, homepage summaries, and certificates. Driver IDs, points, penalties, standings order, and certificate URLs remain unchanged. Leave the original result JSON untouched and rebuild after editing the mapping.
 
 In `config/site.ts`, `display.standingsLimit` controls the initial number of championship standings rows and `display.latestResultsLimit` controls the latest race results rows. Both default to `10`. Use a non-negative integer; `0` shows everyone. The series page shows the configured number of rows. Heading links open standalone full standings or race result pages, which always show everyone. Override either setting in a series `config.ts`, for example:
 

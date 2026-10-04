@@ -49,12 +49,24 @@ Favicon 是 `public/` 下独立的静态图片。在 `config/site.ts` 的 `site.
 | `config/points.ts` | 共享的名次积分、杆位、最快圈及可选自定义奖励规则 |
 | `series/<slug>/config.ts` | 系列赛名称、路由、积分规则及可选的赛季名称、展示顺序、可见状态、展示覆盖、Logo 和证书范围 |
 | `series/<slug>/series.json` | 车辆组别 `carClass` 与按顺序排列的赛程 `rounds` |
+| `series/<slug>/drivers.json` | 可选的车手报名名称，以 iRacing `cust_id` 为键 |
 | `series/<slug>/info.md` | 可选的赛事介绍和规则说明，仅用于展示 |
 | `series/<slug>/documents/*.md` | 可选的赛事文档，自动生成独立页面，仅用于展示 |
 | `series/<slug>/eventresult-*.json` | 未经修改的 iRacing 比赛结果 API 响应 |
 | `series/<slug>/penalties/<roundId>.json` | 可选的该轮赛事仲裁决定 |
 
 系列赛的 `config.ts` 默认导出配置，包含 `id`、`name`、`shortName`、`slug` 和 `pointsSystem`；`slug` 必须与目录名相同，`pointsSystem` 必须引用 `config/points.ts` 中的键。可用 `display` 覆盖全站表格展示选项。比赛结果行不应手工写入配置。
+
+需要使用赛会登记名称时，在系列赛目录添加可选的 `drivers.json`：
+
+```json
+{
+  "99000001": "张三",
+  "99000002": "李四"
+}
+```
+
+键是车手的 iRacing `cust_id`（用字符串填写），值可以是中文名、英文名或昵称。示例赛事中的名称为虚构示例，请替换为实际报名信息。名称会去除首尾空白；空白名称或非字符串值会导致构建报错。未配置的车手继续显示原始 `display_name`；省略整个文件则保留全部原名。映射对该系列赛所有轮次生效，覆盖正赛、排位、练习、积分榜、首页摘要和证书。车手 ID、积分、处罚、积分榜顺序和证书地址均保持不变。原始赛果 JSON 无需修改，更新映射后重新构建站点。
 
 在 `config/site.ts` 的 `display` 中，`standingsLimit` 控制锦标赛积分榜默认显示人数，`latestResultsLimit` 控制最新比赛结果默认显示人数，两者默认均为 `10`。填写非负整数，`0` 表示显示全部；主页按配置限制显示人数，点击标题右侧的“查看完整积分榜”或“查看完整结果”进入独立页面查看完整名单。独立页面不受人数限制。可在单个系列赛的 `config.ts` 中覆盖，例如：
 

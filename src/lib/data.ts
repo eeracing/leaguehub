@@ -4,6 +4,7 @@ import { adaptIracingEventResult } from './iracing-adapter';
 import { applyPenalties, parsePenaltyFile } from './penalties';
 import { calculateRacePoints } from './points';
 import { calculateStandings } from './standings';
+import { parseDriverNames, withDriverNames } from './driver-names';
 
 const seriesModules = import.meta.glob('../../series/*/config.ts', {
   eager: true,
@@ -77,7 +78,19 @@ export function getSeriesView(series: SeriesConfig): SeriesView {
   scoredRaces.sort(
     (a, b) => (order.get(a.roundId) ?? 0) - (order.get(b.roundId) ?? 0),
   );
-  const races = scoredRaces;
+  // Calculate standings with the original names to preserve the existing tie-break order.
+  const standings = calculateStandings(scoredRaces);
+  const namesKey = `../../series/${series.slug}/drivers.json`;
+  const names = parseDriverNames(jsonModules[namesKey] === undefined ? {} : jsonModules[namesKey], `series/${series.slug}/drivers.json`);
+  const races = scoredRaces.map((race) => ({
+    ...race,
+    results: withDriverNames(race.results, names),
+  }));
+  for (const sessions of Object.values(eventSessions)) {
+    sessions.race.results = withDriverNames(sessions.race.results, names);
+    if (sessions.qualifying) sessions.qualifying.results = withDriverNames(sessions.qualifying.results, names);
+    if (sessions.practice) sessions.practice.results = withDriverNames(sessions.practice.results, names);
+  }
   const latestRace = races.at(-1);
   const completed = new Set(races.map((race) => race.roundId));
   const nextRound = data.rounds.find((round) => !completed.has(round.id));
@@ -88,7 +101,7 @@ export function getSeriesView(series: SeriesConfig): SeriesView {
     display,
     races,
     eventSessions,
-    standings: calculateStandings(scoredRaces),
+    standings: withDriverNames(standings, names),
     latestRace,
     latestRound: data.rounds.find((round) => round.id === latestRace?.roundId),
     nextRound,
