@@ -1,0 +1,31 @@
+---
+import StandingsTable from '../../../components/StandingsTable.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getSeriesConfigs, getSeriesView } from '../../../lib/data';
+
+export function getStaticPaths() {
+  return getSeriesConfigs().map((seriesConfig) => ({
+    params: { series: seriesConfig.slug },
+    props: { seriesConfig },
+  }));
+}
+
+const { seriesConfig } = Astro.props;
+const series = getSeriesView(seriesConfig);
+const seasonName = series.config.seasonName?.trim();
+---
+<BaseLayout title={`${series.config.name} · 完整积分榜`} description={`${series.config.name}全部车手的锦标赛积分、各轮成绩与排名。`}>
+  <section class="result-hero">
+    <div class="shell">
+      <a class="back-link" href={`/racing/${series.config.slug}#standings`}>← {series.config.name}</a>
+      <p class="eyebrow">{series.config.name}</p>
+      <h1>锦标赛积分榜</h1>
+      <p>{seasonName && <>{seasonName} · </>}{series.data.carClass}</p>
+    </div>
+  </section>
+  <section class="content-section shell">
+    {series.standings.length
+      ? <StandingsTable series={series} />
+      : <p class="empty-state">暂无成绩，首场比赛结束后公布积分榜。</p>}
+  </section>
+</BaseLayout>

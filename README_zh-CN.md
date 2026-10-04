@@ -56,6 +56,17 @@ Favicon 是 `public/` 下独立的静态图片。在 `config/site.ts` 的 `site.
 
 系列赛的 `config.ts` 默认导出配置，包含 `id`、`name`、`shortName`、`slug` 和 `pointsSystem`；`slug` 必须与目录名相同，`pointsSystem` 必须引用 `config/points.ts` 中的键。可用 `display` 覆盖全站表格展示选项。比赛结果行不应手工写入配置。
 
+在 `config/site.ts` 的 `display` 中，`standingsLimit` 控制锦标赛积分榜默认显示人数，`latestResultsLimit` 控制最新比赛结果默认显示人数，两者默认均为 `10`。填写非负整数，`0` 表示显示全部；主页按配置限制显示人数，点击标题右侧的“查看完整积分榜”或“查看完整结果”进入独立页面查看完整名单。独立页面不受人数限制。可在单个系列赛的 `config.ts` 中覆盖，例如：
+
+```ts
+display: {
+  standingsLimit: 15,
+  latestResultsLimit: 5,
+},
+```
+
+修改配置后重新构建站点。
+
 `config/points.ts` 中的 `custom` 是特殊积分示例：P1–P10 分别得 32、24、18、14、12、10、8、6、4、2 分；杆位和最快圈各得 1 分；名次提升最多和事故点最少的车手各得 1 分；P11 起（含 P11）完赛车手各得 1 分。两项单人奖励并列时由正式名次更靠前者获得，名次提升须大于零。特殊奖励以处罚后的正式名次计算，取消资格者得零分。要启用该规则，在对应系列赛的 `config.ts` 中设置 `pointsSystem: 'custom'`。其他特殊规则可通过新增积分方案的 `customBonus(race)` 实现，返回以车手 ID 为键、额外分数为值的对象。
 
 在 `config/site.ts` 中设置 `site.timeZone`（如 `Pacific/Auckland`），赛事日期和时间都按该时区显示；`series.json` 中的 `date` 继续使用带 `Z` 或时区偏移量的 ISO 8601 时间戳。修改配置后须重新构建站点。

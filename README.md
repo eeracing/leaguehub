@@ -56,6 +56,17 @@ The favicon is a separate static image in `public/`. Set its path with `site.fav
 
 Each series `config.ts` must export a default configuration with `id`, `name`, `shortName`, `slug`, and `pointsSystem`. The `slug` must match the directory name, and `pointsSystem` must reference a key in `config/points.ts`. Use `display` to override the site-wide table options. Do not enter race result rows manually in the configuration.
 
+In `config/site.ts`, `display.standingsLimit` controls the initial number of championship standings rows and `display.latestResultsLimit` controls the latest race results rows. Both default to `10`. Use a non-negative integer; `0` shows everyone. The series page shows the configured number of rows. Heading links open standalone full standings or race result pages, which always show everyone. Override either setting in a series `config.ts`, for example:
+
+```ts
+display: {
+  standingsLimit: 15,
+  latestResultsLimit: 5,
+},
+```
+
+Rebuild after changing these settings.
+
 The `custom` points system in `config/points.ts` demonstrates unusual rules: P1–P10 score 32, 24, 18, 14, 12, 10, 8, 6, 4, 2; pole and fastest lap score 1 each; the most improved driver and the driver with the fewest incidents score 1 each; every finisher from P11 onward scores 1. Ties for the two individual bonuses go to the higher official finisher, and a position gain must be positive. Bonuses use official positions after penalties; disqualified drivers score zero. Set `pointsSystem: 'custom'` in a series configuration to use this example. For other rules, add a points system with a `customBonus(race)` function that returns extra points keyed by driver ID.
 
 Set `site.timeZone` in `config/site.ts` (for example, `Pacific/Auckland`) to display schedule dates consistently across builds. Keep `date` values in `series.json` as ISO 8601 timestamps with `Z` or an explicit UTC offset. Rebuild the site after changing the configuration.

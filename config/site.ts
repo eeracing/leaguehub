@@ -5,6 +5,8 @@ export type DisplayOptions = {
   poles: boolean;
   fastestLaps: boolean;
   incidents: boolean;
+  standingsLimit: number;
+  latestResultsLimit: number;
 };
 
 export const config = {
@@ -27,5 +29,7 @@ export const config = {
     poles: true,
     fastestLaps: true,
     incidents: false,
+    standingsLimit: 10,
+    latestResultsLimit: 10,
   } satisfies DisplayOptions,
 };

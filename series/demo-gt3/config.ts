@@ -9,4 +9,8 @@ export default {
   logo: '/series/demo-gt3.svg',
   pointsSystem: 'standard',
   certificates: { top: 5 },
+  display: {
+    standingsLimit: 5,
+    latestResultsLimit: 5,
+  },
 } satisfies SeriesConfig;

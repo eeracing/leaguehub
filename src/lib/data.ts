@@ -65,6 +65,12 @@ function raceFiles(series: SeriesConfig, data: SeriesData): {
 }
 
 export function getSeriesView(series: SeriesConfig): SeriesView {
+  const display = { ...config.display, ...series.display } as DisplayOptions;
+  for (const key of ['standingsLimit', 'latestResultsLimit'] as const) {
+    if (!Number.isInteger(display[key]) || display[key] < 0) {
+      throw new Error(`${series.slug}: display.${key} must be a non-negative integer (0 shows everyone).`);
+    }
+  }
   const data = dataFile<SeriesData>(series.slug, 'series');
   const order = new Map(data.rounds.map((round) => [round.id, round.round]));
   const { races: scoredRaces, eventSessions } = raceFiles(series, data);
@@ -79,7 +85,7 @@ export function getSeriesView(series: SeriesConfig): SeriesView {
   return {
     config: series,
     data,
-    display: { ...config.display, ...series.display } as DisplayOptions,
+    display,
     races,
     eventSessions,
     standings: calculateStandings(scoredRaces),

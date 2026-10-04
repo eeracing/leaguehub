@@ -46,14 +46,14 @@ const SeriesInfo = Object.hasOwn(infoModules, infoPath) ? infoModules[infoPath].
   </nav>
 
   <section class="content-section shell" id="standings">
-    <SectionHeading title="锦标赛积分榜" />
-    {series.standings.length ? <StandingsTable series={series} /> : <p class="empty-state">暂无成绩，首场比赛结束后公布积分榜。</p>}
+    <SectionHeading title="锦标赛积分榜" link={series.standings.length ? `/racing/${series.config.slug}/standings` : undefined} linkLabel="查看完整积分榜" />
+    {series.standings.length ? <StandingsTable series={series} limit={series.display.standingsLimit} /> : <p class="empty-state">暂无成绩，首场比赛结束后公布积分榜。</p>}
   </section>
 
   {series.latestRace && series.latestRound && <section class="content-section section-muted" id="results">
     <div class="shell">
-    <SectionHeading eyebrow={`第 ${series.latestRound.round} 轮 · ${series.latestRound.track}`} title="最新比赛结果" link={`/racing/${series.config.slug}/results/${series.latestRound.id}`} linkLabel="查看完整结果" />
-    <RaceResultsTable race={series.latestRace} showIncidents={series.display.incidents} />
+      <SectionHeading eyebrow={`第 ${series.latestRound.round} 轮 · ${series.latestRound.track}`} title="最新比赛结果" link={`/racing/${series.config.slug}/results/${series.latestRound.id}`} linkLabel="查看完整结果" />
+      <RaceResultsTable race={series.latestRace} showIncidents={series.display.incidents} limit={series.display.latestResultsLimit} />
     </div>
   </section>}
 
