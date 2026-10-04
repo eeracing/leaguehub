@@ -2,28 +2,40 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { config } from '../../config/site';
 
-async function readFaviconAttributes(): Promise<{ type?: string; sizes?: string }> {
-  const logo = config.site.logo;
-  if (!logo.startsWith('/') || logo.startsWith('//') || logo.includes('..')) return {};
+interface Favicon {
+  href: string;
+  type?: string;
+  sizes?: string;
+  image?: Uint8Array<ArrayBuffer>;
+}
 
-  const pathname = new URL(logo, 'https://localhost').pathname;
-  const assetPath = path.join(process.cwd(), 'public', decodeURIComponent(pathname).slice(1));
-  const publicPath = path.join(process.cwd(), 'public') + path.sep;
-  if (!assetPath.startsWith(publicPath)) return {};
+async function createFavicon(): Promise<Favicon> {
+  const logo = config.site.logo;
+  const fallback = { href: logo };
+  if (!logo.startsWith('/') || logo.startsWith('//') || logo.includes('..')) return fallback;
 
   try {
-    const metadata = await sharp(assetPath).metadata();
+    const pathname = new URL(logo, 'https://localhost').pathname;
+    const assetPath = path.join(process.cwd(), 'public', decodeURIComponent(pathname).slice(1));
+    const publicPath = path.join(process.cwd(), 'public') + path.sep;
+    if (!assetPath.startsWith(publicPath)) return fallback;
+
+    const image = await sharp(assetPath)
+      .rotate()
+      .resize(64, 64, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toBuffer();
     return {
-      type: metadata.mediaType,
-      sizes: metadata.format === 'svg'
-        ? 'any'
-        : metadata.width && metadata.height ? `${metadata.width}x${metadata.height}` : undefined,
+      href: '/favicon.png',
+      type: 'image/png',
+      sizes: '64x64',
+      image: new Uint8Array(image),
     };
   } catch {
-    // Preserve the existing icon link for formats Sharp cannot inspect or external assets.
-    return {};
+    // Preserve the logo link when a local image cannot be converted.
+    return fallback;
   }
 }
 
-// Inspect the shared logo once per build, rather than once for every page.
-export const faviconAttributes = readFaviconAttributes();
+// Generate the shared icon once for the endpoint and all pages during the build.
+export const favicon = createFavicon();

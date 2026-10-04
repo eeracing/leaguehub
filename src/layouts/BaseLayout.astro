@@ -1,6 +1,6 @@
 ---
 import { config } from '../../config/site';
-import { faviconAttributes } from '../lib/favicon';
+import { favicon } from '../lib/favicon';
 import Navigation from '../components/Navigation.astro';
 import Sponsors from '../components/Sponsors.astro';
 import '../styles/global.css';
@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 const pageTitle = title ? `${title} - ${config.site.name}` : `${config.site.name} - ${config.site.tagline}`;
 const canonicalUrl = canonical && Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-const iconAttributes = await faviconAttributes;
+const icon = await favicon;
 ---
 
 <!doctype html>
@@ -67,7 +67,7 @@ const iconAttributes = await faviconAttributes;
       })();
     </script>
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" href={config.site.logo} type={iconAttributes.type} sizes={iconAttributes.sizes} />
+    <link rel="icon" href={icon.href} type={icon.type} sizes={icon.sizes} />
     <title>{pageTitle}</title>
   </head>
   <body>

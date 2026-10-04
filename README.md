@@ -38,7 +38,7 @@ The build output is in `dist/`. Run `npm run preview` to preview the built site 
 
 When publishing at a different domain, change only `site` in `astro.config.mjs`. Page canonical URLs, the sitemap, and `robots.txt` use that same address.
 
-The favicon uses `site.logo` from `config/site.ts`. For local images in `public/` that Sharp can inspect, the build automatically declares the image MIME type and actual dimensions; SVG icons use `sizes="any"`. Rebuild after changing the logo. These declarations do not guarantee SVG favicon support in every browser.
+The favicon uses `site.logo` from `config/site.ts`. For local images in `public/` that Sharp can read, the build automatically generates `/favicon.png`, a 64×64 PNG with matching `type` and `sizes` declarations. The logo keeps its aspect ratio with transparent padding as needed. External URLs or images that cannot be converted retain the original logo link. Rebuild after changing the logo; do not place a separate `favicon.png` in `public/`, since that path is generated.
 
 ## Data and configuration
 
