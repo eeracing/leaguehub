@@ -38,7 +38,7 @@ npm run build
 
 发布到其他域名时，只需修改 `astro.config.mjs` 中的 `site`。页面 canonical、站点地图和 `robots.txt` 会使用同一个地址生成。
 
-Favicon 使用 `config/site.ts` 中的 `site.logo`。对于 `public/` 下 Sharp 可读取的本地图片，构建时自动生成 64×64 PNG 文件 `/favicon.png`，并声明对应的 `type` 和 `sizes`。Logo 保持原始比例，必要时使用透明留白。外部 URL 或无法转换的图片仍使用原始 Logo 链接。修改 Logo 后需重新构建；不要在 `public/` 中另放 `favicon.png`，此路径由构建生成。
+Favicon 是 `public/` 下独立的静态图片。在 `config/site.ts` 的 `site.favicon` 中配置路径，默认使用 `/favicon.png`。页面只引用该路径，不声明 `type` 或 `sizes`，由浏览器处理图片。更换品牌时需分别替换 Logo 和 favicon，并更新对应路径。Favicon 按原文件复制，不自动生成或调整尺寸。
 
 ## 数据与配置放在哪里
 

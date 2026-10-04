@@ -12,6 +12,7 @@ export const config = {
     name: 'EE Racing',
     tagline: '模拟赛车赛事积分榜',
     logo: '/logo.svg',
+    favicon: '/favicon.png',
     accent: '#1747d1',
     locale: 'zh-CN',
     timeZone: 'Pacific/Auckland',

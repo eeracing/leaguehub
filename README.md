@@ -38,7 +38,7 @@ The build output is in `dist/`. Run `npm run preview` to preview the built site 
 
 When publishing at a different domain, change only `site` in `astro.config.mjs`. Page canonical URLs, the sitemap, and `robots.txt` use that same address.
 
-The favicon uses `site.logo` from `config/site.ts`. For local images in `public/` that Sharp can read, the build automatically generates `/favicon.png`, a 64×64 PNG with matching `type` and `sizes` declarations. The logo keeps its aspect ratio with transparent padding as needed. External URLs or images that cannot be converted retain the original logo link. Rebuild after changing the logo; do not place a separate `favicon.png` in `public/`, since that path is generated.
+The favicon is a separate static image in `public/`. Set its path with `site.favicon` in `config/site.ts` (default: `/favicon.png`). The page links to this path without declaring `type` or `sizes`, leaving image handling to the browser. When changing your branding, replace both the logo and favicon and update their paths. The favicon is copied as-is, without automatic generation or resizing.
 
 ## Data and configuration
 
