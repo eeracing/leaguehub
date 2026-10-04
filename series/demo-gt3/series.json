@@ -1,10 +1,10 @@
 {
-  "carClass": "DEMO GT3 · 虚拟数据",
+  "carClass": "GT3",
   "rounds": [
     {
       "id": "round-1",
       "round": 1,
-      "name": "DEMO Round 01 · Spa-Francorchamps",
+      "name": "第 1 轮 · Spa-Francorchamps",
       "track": "Spa-Francorchamps",
       "layout": "Grand Prix",
       "date": "2026-07-05T10:00:00Z",
@@ -13,7 +13,7 @@
     {
       "id": "round-2",
       "round": 2,
-      "name": "DEMO Round 02 · Autodromo Nazionale Monza",
+      "name": "第 2 轮 · Autodromo Nazionale Monza",
       "track": "Autodromo Nazionale Monza",
       "layout": "Grand Prix",
       "date": "2026-07-12T10:00:00Z",
@@ -22,7 +22,7 @@
     {
       "id": "round-3",
       "round": 3,
-      "name": "DEMO Round 03 · Nürburgring Grand-Prix-Strecke",
+      "name": "第 3 轮 · Nürburgring Grand-Prix-Strecke",
       "track": "Nürburgring Grand-Prix-Strecke",
       "layout": "Grand Prix",
       "date": "2026-07-19T10:00:00Z",
@@ -31,7 +31,7 @@
     {
       "id": "round-4",
       "round": 4,
-      "name": "DEMO Round 04 · Road Atlanta",
+      "name": "第 4 轮 · Road Atlanta",
       "track": "Road Atlanta",
       "layout": "Full Course",
       "date": "2026-07-26T10:00:00Z",
@@ -40,7 +40,7 @@
     {
       "id": "round-5",
       "round": 5,
-      "name": "DEMO Round 05 · Sebring International Raceway",
+      "name": "第 5 轮 · Sebring International Raceway",
       "track": "Sebring International Raceway",
       "layout": "International",
       "date": "2026-08-02T10:00:00Z",
@@ -49,7 +49,7 @@
     {
       "id": "round-6",
       "round": 6,
-      "name": "DEMO Round 06 · Watkins Glen International",
+      "name": "第 6 轮 · Watkins Glen International",
       "track": "Watkins Glen International",
       "layout": "Boot",
       "date": "2026-08-09T10:00:00Z",
@@ -58,7 +58,7 @@
     {
       "id": "round-7",
       "round": 7,
-      "name": "DEMO Round 07 · Autodromo Internazionale Enzo e Dino Ferrari",
+      "name": "第 7 轮 · Autodromo Internazionale Enzo e Dino Ferrari",
       "track": "Autodromo Internazionale Enzo e Dino Ferrari",
       "layout": "Grand Prix",
       "date": "2026-08-16T10:00:00Z",
@@ -67,7 +67,7 @@
     {
       "id": "round-8",
       "round": 8,
-      "name": "DEMO Round 08 · Mount Panorama Circuit",
+      "name": "第 8 轮 · Mount Panorama Circuit",
       "track": "Mount Panorama Circuit",
       "layout": "Full Course",
       "date": "2026-08-23T10:00:00Z",
@@ -76,7 +76,7 @@
     {
       "id": "round-9",
       "round": 9,
-      "name": "DEMO Round 09 · Silverstone Circuit",
+      "name": "第 9 轮 · Silverstone Circuit",
       "track": "Silverstone Circuit",
       "layout": "Grand Prix",
       "date": "2026-08-30T10:00:00Z",
@@ -85,7 +85,7 @@
     {
       "id": "round-10",
       "round": 10,
-      "name": "DEMO Round 10 · Circuit de Barcelona-Catalunya",
+      "name": "第 10 轮 · Circuit de Barcelona-Catalunya",
       "track": "Circuit de Barcelona-Catalunya",
       "layout": "Grand Prix",
       "date": "2026-09-06T10:00:00Z",
@@ -94,7 +94,7 @@
     {
       "id": "round-11",
       "round": 11,
-      "name": "DEMO Round 11 · Fuji International Speedway",
+      "name": "第 11 轮 · Fuji International Speedway",
       "track": "Fuji International Speedway",
       "layout": "Grand Prix",
       "date": "2026-09-13T10:00:00Z",
@@ -103,7 +103,7 @@
     {
       "id": "round-12",
       "round": 12,
-      "name": "DEMO Round 12 · Suzuka International Racing Course",
+      "name": "第 12 轮 · Suzuka International Racing Course",
       "track": "Suzuka International Racing Course",
       "layout": "Grand Prix",
       "date": "2026-09-20T10:00:00Z",

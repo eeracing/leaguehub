@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
-  <title id="title">DEMO GT4 尚未开赛锦标赛</title>
+  <title id="title">GT4 冲刺杯</title>
   <rect width="96" height="96" fill="#172b49"/>
   <path d="M64 0h32v96H80L64 0Z" fill="#137c84"/>
   <path d="M0 91h96v5H0z" fill="#90d7d2"/>
   <g fill="#fff" font-family="Arial, Helvetica, sans-serif" font-weight="800">
-    <text x="9" y="29" font-size="17" letter-spacing="1">DEMO</text>
+    <text x="9" y="29" font-size="17" letter-spacing="1">2026</text>
     <text x="7" y="77" font-size="39" letter-spacing="-2">GT4</text>
   </g>
 </svg>

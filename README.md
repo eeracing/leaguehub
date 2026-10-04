@@ -115,12 +115,12 @@ Each round in `series.json` can reference an original result file in the same di
 
 ```json
 {
-  "carClass": "DEMO GT3 · Fictional data",
+  "carClass": "GT3",
   "rounds": [
     {
       "id": "round-1",
       "round": 1,
-      "name": "DEMO Round 01 · Spa-Francorchamps",
+      "name": "第 1 轮 · Spa-Francorchamps",
       "track": "Spa-Francorchamps",
       "layout": "Grand Prix",
       "date": "2026-07-05T10:00:00Z",
@@ -167,7 +167,7 @@ Delete its `series/<slug>/` directory or move it outside `series/` to archive it
 
 ### Included examples
 
-- `series/demo-gt3/`: **DEMO / fictional data** with 12 simulated rounds, three sessions per round, and separate penalty files. It demonstrates the pages, standings, and penalty workflow and does not represent real races.
+- `series/demo-gt3/`: **DEMO / fictional data** with 20 fictional drivers, 12 simulated rounds, three sessions per round, and separate penalty files. It demonstrates the pages, standings, and penalty workflow and does not represent real races.
 - `series/demo-upcoming/`: **DEMO / fictional data** with six scheduled rounds and no results. It demonstrates series progress before the first race, the next race, empty standings, and the upcoming schedule. No result pages or “Race results” page navigation are generated for this series.
 
 ## How results are generated

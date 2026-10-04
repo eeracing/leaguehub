@@ -1,6 +1,6 @@
 ---
 title: 示例站点公告
-summary: 说明本站 DEMO 内容的用途。
+summary: 说明本站示例内容的用途。
 order: 20
 ---
 

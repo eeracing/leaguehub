@@ -115,12 +115,12 @@ effectiveDate: "2026-07-01"
 
 ```json
 {
-  "carClass": "DEMO GT3 · 虚拟数据",
+  "carClass": "GT3",
   "rounds": [
     {
       "id": "round-1",
       "round": 1,
-      "name": "DEMO Round 01 · Spa-Francorchamps",
+      "name": "第 1 轮 · Spa-Francorchamps",
       "track": "Spa-Francorchamps",
       "layout": "Grand Prix",
       "date": "2026-07-05T10:00:00Z",
@@ -167,7 +167,7 @@ certificates: 'all',       // 所有取得正式名次的车手
 
 ### 随仓库提供的示例
 
-- `series/demo-gt3/`：**DEMO / 虚拟数据**，包含 12 轮模拟结果、每轮三个场次及独立处罚文件，用于验证页面、积分与处罚流程，不代表真实赛事。
+- `series/demo-gt3/`：**DEMO / 虚拟数据**，包含 20 名虚拟车手、12 轮模拟结果、每轮三个场次及独立处罚文件，用于验证页面、积分与处罚流程，不代表真实赛事。
 - `series/demo-upcoming/`：**DEMO / 虚拟数据**，只有 6 轮已公布赛程，没有结果文件。用于验证未开赛时的进度、下一场比赛、空积分榜和“即将举行”赛程；此时不生成结果页或“比赛结果”页内导航。
 
 ## 结果如何生成

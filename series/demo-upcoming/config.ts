@@ -2,10 +2,10 @@ import type { SeriesConfig } from '../../src/types';
 
 export default {
   id: 'demo-upcoming',
-  name: 'DEMO · 尚未开赛锦标赛',
-  shortName: 'DEMO UPCOMING',
+  name: 'GT4 冲刺杯',
+  shortName: 'GT4',
   slug: 'demo-upcoming',
-  seasonName: 'DEMO 2026 GT4 赛季',
+  seasonName: '2026 赛季',
   logo: '/series/demo-upcoming.svg',
   pointsSystem: 'standard',
 } satisfies SeriesConfig;

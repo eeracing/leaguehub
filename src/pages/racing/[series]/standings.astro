@@ -18,7 +18,6 @@ const seasonName = series.config.seasonName?.trim();
   <section class="result-hero">
     <div class="shell">
       <a class="back-link" href={`/racing/${series.config.slug}#standings`}>← {series.config.name}</a>
-      <p class="eyebrow">{series.config.name}</p>
       <h1>锦标赛积分榜</h1>
       <p>{seasonName && <>{seasonName} · </>}{series.data.carClass}</p>
     </div>
