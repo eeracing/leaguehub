@@ -1,4 +1,5 @@
 import type { EventSessions, RaceResult, TimedSession } from '../types';
+import { formatDurationMs } from './time';
 
 type IracingResult = {
   cust_id: number;
@@ -41,17 +42,7 @@ const PRACTICE_SESSION_TYPE = 3;
 const IRACING_TIME_UNITS_PER_SECOND = 10_000;
 
 function formatDuration(timeUnits: number, includeHours = false): string {
-  if (timeUnits < 0) return '—';
-  const totalMs = Math.round(timeUnits / 10);
-  const hours = Math.floor(totalMs / 3_600_000);
-  const minutes = Math.floor((totalMs % 3_600_000) / 60_000);
-  const seconds = Math.floor((totalMs % 60_000) / 1_000);
-  const milliseconds = totalMs % 1_000;
-
-  if (includeHours || hours > 0) {
-    return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
-  }
-  return `${minutes}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+  return formatDurationMs(timeUnits / 10, includeHours);
 }
 
 function isRaceSession(session: IracingSessionResult): boolean {
@@ -140,6 +131,9 @@ export function adaptIracingEventResult(input: unknown, roundId: string): EventS
   const gridPole = raceSession.results.find((result) => result.starting_position === 0);
   const pole = qualifyingPole ?? gridPole;
   const leaderLaps = Math.max(...raceSession.results.map((result) => result.laps_complete));
+  const leader = raceSession.results.find((result) => result.finish_position === 0);
+  const leaderTimeMs = leader && Number.isFinite(leader.average_lap) && leader.average_lap >= 0
+    ? leader.average_lap * leader.laps_complete / 10 : undefined;
 
   const results: RaceResult[] = raceSession.results
     .slice()
@@ -151,6 +145,12 @@ export function adaptIracingEventResult(input: unknown, roundId: string): EventS
     .map((result) => {
       const position = positionFromIracing(result.finish_position);
       const lapDeficit = leaderLaps - result.laps_complete;
+      // Use the recorded interval for lead-lap cars: average_lap is rounded.
+      const timeMs = leaderTimeMs !== undefined && result.laps_complete === leader?.laps_complete
+        && Number.isFinite(result.interval) && result.interval >= 0
+        ? leaderTimeMs + result.interval / 10
+        : Number.isFinite(result.average_lap) && result.average_lap >= 0
+          ? result.average_lap * result.laps_complete / 10 : undefined;
       const gap = position === 1
         ? '—'
         : result.interval >= 0
@@ -170,7 +170,8 @@ export function adaptIracingEventResult(input: unknown, roundId: string): EventS
         lapsLed: result.laps_lead ?? 0,
         status: raceStatus(result),
         reasonOut: result.reason_out,
-        time: formatDuration(result.average_lap * result.laps_complete, true),
+        time: formatDurationMs(timeMs ?? NaN, true),
+        timeMs,
         gap,
         bestLap: formatDuration(result.best_lap_time),
         bestLapMs: result.best_lap_time >= 0

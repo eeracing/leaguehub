@@ -11,7 +11,7 @@ The template includes:
 - **Series pages:** Show schedules, championship standings, the latest race results, and optional series information.
 - **Series documents:** Discover Markdown files and generate reading pages with a table of contents, version, and effective date.
 - **Race result pages:** Show race, qualifying, and practice results, including pole position and fastest lap data.
-- **Automatic points calculation:** Applies configurable scoring rules and supports position penalties, points deductions, and disqualifications.
+- **Automatic points calculation:** Applies configurable scoring rules and supports time penalties, position penalties, points deductions, and disqualifications.
 - **Multiple series and static builds:** Add a series by adding configuration and data; navigation and pages are generated at build time.
 
 The repository includes fictional examples for a completed series and an upcoming series, so you can preview the site immediately after installing dependencies. To use it for your league, replace the examples and update the site settings, scoring rules, and race data.
@@ -162,7 +162,7 @@ The demo GT3 series enables certificates for the top five. Public certificate li
 
 ### Penalty files
 
-Put stewarding decisions in `series/<slug>/penalties/<roundId>.json` and leave the original result file unchanged. Position drops, points deductions, and disqualifications are supported. See the [penalty file reference](series/penalties.md) for the full JSON format (in Chinese).
+Put stewarding decisions in `series/<slug>/penalties/<roundId>.json` and leave the original result file unchanged. Time penalties, position drops, points deductions, and disqualifications are supported. See the [penalty file reference](series/penalties.md) for the full JSON format (in Chinese).
 
 Position changes and disqualifications take effect before points are calculated. A disqualified driver scores zero points for that round, including pole position and fastest lap bonuses; their lap times are also excluded from the official fastest lap statistics.
 

@@ -162,7 +162,7 @@ certificates: 'all',       // 所有取得正式名次的车手
 
 ### 处罚文件
 
-仲裁决定放在 `series/<slug>/penalties/<roundId>.json`，原始结果文件保持不变。支持名次后退、扣除积分和取消资格；完整 JSON 格式见 [赛事处罚说明](series/penalties.md)。
+仲裁决定放在 `series/<slug>/penalties/<roundId>.json`，原始结果文件保持不变。支持累加罚时并重算成绩、名次后退、扣除积分和取消资格；完整 JSON 格式见 [赛事处罚说明](series/penalties.md)。
 
 名次调整及取消资格在计算积分前生效。取消资格的车手该轮得零分（包括杆位和最快圈奖励），其圈速也不参与官方最快圈及相应统计。
 

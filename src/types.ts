@@ -44,6 +44,7 @@ export type RaceResult = {
   status: RaceStatus;
   reasonOut: string;
   time: string;
+  timeMs: number | undefined;
   gap: string;
   bestLap: string;
   bestLapMs: number;
@@ -100,7 +101,12 @@ export type DisqualificationPenalty = PenaltyBase & {
   type: 'disqualification';
 };
 
-export type RacePenalty = PositionPenalty | PointsPenalty | DisqualificationPenalty;
+export type TimePenalty = PenaltyBase & {
+  type: 'time';
+  seconds: number;
+};
+
+export type RacePenalty = TimePenalty | PositionPenalty | PointsPenalty | DisqualificationPenalty;
 
 export type PenaltyFile = {
   penalties: RacePenalty[];

@@ -10,6 +10,7 @@ const results = limit ? race.results.slice(0, limit) : race.results;
 const certificateIds = new Set(certificateDriverIds);
 
 function penaltyValue(penalty: RacePenalty) {
+  if (penalty.type === 'time') return `加罚 ${penalty.seconds} 秒`;
   if (penalty.type === 'position') {
     return `后退 ${penalty.positions} 位`;
   }
@@ -19,6 +20,7 @@ function penaltyValue(penalty: RacePenalty) {
 }
 
 function penaltyLabel(penalty: RacePenalty): string {
+  if (penalty.type === 'time') return '罚时';
   if (penalty.type === 'position') return '名次处罚';
   if (penalty.type === 'points') return '积分处罚';
   return '赛事取消资格';
@@ -34,7 +36,7 @@ function signedPoints(points: number): string {
     <tbody>{results.map((result) => {
       const penalties = race.penalties.filter((penalty) => penalty.driverId === result.driverId);
       const score = race.championshipPoints.find((entry) => entry.driverId === result.driverId);
-      const hasPositionPenalty = penalties.some((penalty) => penalty.type === 'position');
+      const hasPositionPenalty = penalties.some((penalty) => penalty.type === 'position' || penalty.type === 'time');
       const change = positionChange(result);
       const status = resultStatus(result, penalties);
       const dialogId = `score-${seriesSlug ?? 'race'}-${race.roundId}-${result.driverId}`;
