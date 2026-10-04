@@ -38,6 +38,8 @@ npm run build
 
 发布到其他域名时，只需修改 `astro.config.mjs` 中的 `site`。页面 canonical、站点地图和 `robots.txt` 会使用同一个地址生成。
 
+Favicon 使用 `config/site.ts` 中的 `site.logo`。对于 `public/` 下 Sharp 可读取的本地图片，构建时自动声明图片的 MIME 类型和实际尺寸；SVG 使用 `sizes="any"`。修改 Logo 后需重新构建。这些声明不保证所有浏览器都支持 SVG favicon。
+
 ## 数据与配置放在哪里
 
 | 路径 | 用途 |
