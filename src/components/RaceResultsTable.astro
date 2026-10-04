@@ -1,6 +1,7 @@
 ---
 import { getFastestLap } from '../lib/points';
 import { certificateUrl } from '../lib/certificates';
+import { positionChange, resultStatus, validPosition } from '../lib/result-presentation';
 import type { RacePenalty, ScoredRace } from '../types';
 interface Props { race: ScoredRace; showIncidents?: boolean; limit?: number; certificateDriverIds?: string[]; seriesSlug?: string }
 const { race, showIncidents = false, limit, certificateDriverIds = [], seriesSlug } = Astro.props;
@@ -8,14 +9,13 @@ const fastest = getFastestLap(race);
 const results = limit ? race.results.slice(0, limit) : race.results;
 const certificateIds = new Set(certificateDriverIds);
 
-function penaltyValue(penalty: RacePenalty): string {
+function penaltyValue(penalty: RacePenalty) {
   if (penalty.type === 'position') {
     return `后退 ${penalty.positions} 位`;
   }
   if (penalty.type === 'points') {
     return `锦标赛积分扣除 ${penalty.points} 分`;
   }
-  return '取消资格';
 }
 
 function penaltyLabel(penalty: RacePenalty): string {
@@ -23,23 +23,31 @@ function penaltyLabel(penalty: RacePenalty): string {
   if (penalty.type === 'points') return '积分处罚';
   return '赛事取消资格';
 }
+
+function signedPoints(points: number): string {
+  return points > 0 ? `+${points}` : String(points);
+}
 ---
-<div class="table-scroll">
+<div class="table-scroll" tabindex="0" role="region" aria-label="正赛成绩，可横向滚动">
   <table class="results-table">
-    <thead><tr><th class="pos">排名</th><th class="driver">车手</th><th>发车位</th><th>赛车</th><th>圈数</th><th>估算用时 / 差距</th><th>最快圈</th>{showIncidents && <th>事故次数</th>}<th class="points">积分</th></tr></thead>
+    <thead><tr><th scope="col" class="pos">排名</th><th scope="col" class="driver">车手</th><th scope="col" class="grid-column">发车位</th><th scope="col" class="change-column">变化</th><th scope="col">赛车</th><th scope="col">圈数</th><th scope="col">完赛状态</th><th scope="col">时间差</th><th scope="col">最快圈</th>{showIncidents && <th scope="col" class="incidents-column">事故</th>}<th scope="col" class="points">积分</th></tr></thead>
     <tbody>{results.map((result) => {
       const penalties = race.penalties.filter((penalty) => penalty.driverId === result.driverId);
       const score = race.championshipPoints.find((entry) => entry.driverId === result.driverId);
       const hasPositionPenalty = penalties.some((penalty) => penalty.type === 'position');
+      const change = positionChange(result);
+      const status = resultStatus(result, penalties);
+      const dialogId = `score-${seriesSlug ?? 'race'}-${race.roundId}-${result.driverId}`;
       const crown = result.status !== 'disqualified' ? ({ 1: 'gold', 2: 'silver', 3: 'bronze' } as const)[result.position] : undefined;
       return <tr class:list={{ 'has-penalty': penalties.length > 0 }}>
         <td class="pos">
-          <strong class="race-position">
+          <strong class:list={['race-position', { 'ranked-position': result.status !== 'disqualified' && validPosition(result.position) }]}>
             {crown && <svg class:list={['podium-crown', crown]} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M3 6 7.5 10.5 12 3 16.5 10.5 21 6 18.5 17H5.5Z" />
               <path d="M6 20H18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
             </svg>}
-            {result.status === 'disqualified' ? '取消资格' : result.position > 0 ? result.position : '—'}
+            {crown && <span class="sr-only">第 {result.position} 名</span>}
+            {!crown && (result.status === 'disqualified' ? '取消资格' : validPosition(result.position) ? result.position : '—')}
           </strong>
           {hasPositionPenalty && <small class="position-adjustment">原第 {result.finishPosition} 名</small>}
           {seriesSlug && certificateIds.has(result.driverId) && <a class="certificate-link" href={certificateUrl(seriesSlug, race.roundId, result.driverId)} target="_blank" rel="noopener" aria-label={`在新标签页查看${result.driver}第${result.position}名证书 PDF`}>查看证书</a>}
@@ -49,24 +57,117 @@ function penaltyLabel(penalty: RacePenalty): string {
           {penalties.length > 0 && <div class="penalty-list">
             {penalties.map((penalty) => <span class="penalty-note">
               <strong>{penaltyLabel(penalty)}</strong>
-              <span>{penaltyValue(penalty)}</span>
+              {penalty.type !== 'disqualification' && <span>{penaltyValue(penalty)}</span>}
               <span class="penalty-reason">{penalty.reason ?? '未提供原因'}</span>
             </span>)}
           </div>}
         </td>
-        <td>{result.startPosition > 0 ? result.startPosition : '—'}</td><td class="car">{result.car}</td><td>{result.laps}</td><td>{result.status === 'dnf' || result.status === 'disqualified' ? result.reasonOut : result.position === 1 ? result.time : result.gap}</td>
+        <td class="grid-column"><span class="grid-position">{validPosition(result.startPosition) ? result.startPosition : '—'}</span></td>
+        <td class="change-column">{change ? <span class:list={['position-change', change.direction]} title={change.label}><span aria-hidden="true">{change.text}</span><span class="sr-only">{change.label}</span></span> : <span class="no-change"><span aria-hidden="true">—</span><span class="sr-only">无有效名次变化</span></span>}</td><td class="car">{result.car}</td><td>{result.laps}</td>
+        <td class="race-status"><span>{status.label}</span>{status.reason && <small>{status.reasonLabel}：{status.reason}</small>}</td>
+        <td>{result.gap}</td>
         <td class:list={['lap-time', { fastest: fastest?.driverId === result.driverId }]}>{result.bestLap}{fastest?.driverId === result.driverId && <span class="fl-badge">全场最快</span>}</td>
-        {showIncidents && <td>{result.incidents}</td>}
-        <td class="points"><strong>{score?.points ?? 0}</strong>{score && score.customBonus > 0 && <small class="custom-bonus">额外奖励 +{score.customBonus}</small>}</td>
+        {showIncidents && <td class="incidents-column">{result.incidents}</td>}
+        <td class="points score-cell">
+          {score ? <>
+            <button class="score-open" type="button" data-score-dialog={dialogId} aria-haspopup="dialog" aria-controls={dialogId} aria-label={`查看${result.driver}本轮 ${score.points} 分的积分明细`} title="查看积分明细">
+              <strong>{score.points}</strong>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" /><path d="M10 9v5M10 6v.5" /></svg>
+            </button>
+            <dialog class="score-dialog" id={dialogId} aria-labelledby={`${dialogId}-title`} aria-describedby={`${dialogId}-driver`}>
+              <header class="score-header">
+                <div><p class="score-eyebrow">本轮成绩</p><h3 id={`${dialogId}-title`}>积分明细</h3></div>
+                <form method="dialog"><button class="score-close" aria-label="关闭积分明细"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" /></svg></button></form>
+              </header>
+              <div class="score-driver" id={`${dialogId}-driver`}><span>#{result.carNumber}</span><strong>{result.driver}</strong><small>{result.status === 'disqualified' ? '取消资格' : validPosition(result.position) ? `正式名次 P${result.position}` : '无有效正式名次'}</small></div>
+              <div class="score-body">
+                <dl>
+                  <div><dt>名次积分</dt><dd>{score.positionPoints}</dd></div>
+                  {score.poleBonus !== 0 && <div><dt>杆位奖励</dt><dd>{signedPoints(score.poleBonus)}</dd></div>}
+                  {score.fastestLapBonus !== 0 && <div><dt>最快圈奖励</dt><dd>{signedPoints(score.fastestLapBonus)}</dd></div>}
+                  {score.customBonusDetails.map((detail) => <div><dt>{detail.reason}</dt><dd>{signedPoints(detail.points)}</dd></div>)}
+                  {score.penalty > 0 && <div class="score-deduction"><dt>积分处罚</dt><dd>−{score.penalty}</dd></div>}
+                </dl>
+                {result.status === 'disqualified' && <p class="score-note">取消资格，本轮积分归零（扣分不再叠加）。</p>}
+              </div>
+              <footer class="score-total"><span>本轮积分</span><div><strong>{score.points}</strong><span>分</span></div></footer>
+            </dialog>
+          </> : <strong>0</strong>}
+        </td>
       </tr>;
     })}</tbody>
   </table>
 </div>
 
 <style>
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
   .race-position { display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
   .podium-crown { width: 18px; height: 18px; flex: 0 0 18px; fill: currentColor; }
   .podium-crown.gold { color: #d9a528; }
   .podium-crown.silver { color: #a8b2c1; }
   .podium-crown.bronze { color: #bb7c48; }
+  .results-table .driver { min-width: 220px; }
+  .grid-column, .change-column { text-align: center; padding-inline: 10px; }
+  .ranked-position { min-width: 28px; min-height: 28px; padding: 4px 6px; border-radius: 5px; background: var(--surface-muted); color: var(--ink); }
+  .grid-position { color: var(--table-ink); font-size: 12px; font-weight: 650; }
+  .position-change { display: inline-block; min-width: 36px; font-size: 12px; font-weight: 650; }
+  .position-change.gain { color: var(--gain); }
+  .position-change.loss { color: var(--loss); }
+  .no-change, .position-change:not(.gain):not(.loss) { color: var(--faint); }
+  .race-status { min-width: 100px; max-width: 180px; white-space: normal; }
+  .race-status small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+  .incidents-column { text-align: center; width: 72px; }
+  .score-cell { width: 84px; }
+  .score-open { display: inline-flex; align-items: center; justify-content: flex-end; gap: 7px; min-height: 44px; min-width: 54px; padding: 6px 0 6px 8px; border: 0; border-radius: 5px; background: transparent; font: inherit; cursor: pointer; }
+  .score-open strong { border-bottom: 1px dotted var(--line-strong); }
+  .score-open svg { width: 15px; height: 15px; fill: none; stroke: var(--faint); stroke-width: 1.5; stroke-linecap: round; }
+  .score-open:hover svg, .score-open:focus-visible svg { stroke: var(--accent-text); }
+  .score-open:hover strong { border-color: var(--accent-text); }
+  .score-dialog { width: min(400px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0; overflow-y: auto; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 24px 80px #0005; font-variant-numeric: tabular-nums; white-space: normal; text-align: left; }
+  .score-dialog::backdrop { background: #0006; backdrop-filter: blur(4px); }
+  .score-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 24px 16px; }
+  .score-eyebrow { margin: 0 0 6px; color: var(--faint); font-size: 10px; letter-spacing: .1em; }
+  .score-header h3 { margin: 0; font-size: 21px; font-weight: 750; }
+  .score-close { display: grid; width: 36px; height: 36px; place-items: center; padding: 0; color: var(--muted); background: var(--surface-muted); border: 0; border-radius: 50%; cursor: pointer; }
+  .score-close:hover { background: var(--row-hover); color: var(--ink); }
+  .score-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+  .score-driver { margin-inline: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .score-driver > span { margin-right: 8px; color: var(--faint); font-size: 12px; }
+  .score-driver > strong { color: var(--ink); font-size: 14px; }
+  .score-driver small { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
+  .score-body { padding: 12px 24px 20px; }
+  .score-body dl { margin: 0; font-size: 13px; }
+  .score-body dl div { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-block: 9px; }
+  .score-body dt { overflow-wrap: anywhere; }
+  .score-body dd { margin: 0; flex-shrink: 0; font-weight: 650; }
+  .score-deduction dd { color: var(--loss); }
+  .score-note { margin: 12px 0 0; padding: 10px 12px; border-radius: 6px; background: var(--surface-muted); color: var(--muted); font-size: 12px; line-height: 1.6; }
+  .score-total { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 24px; background: var(--surface-muted); border-top: 1px solid var(--line); font-size: 13px; font-weight: 650; }
+  .score-total div { display: flex; align-items: baseline; gap: 6px; }
+  .score-total strong { color: var(--accent-text); font-size: 32px; line-height: 1.2; }
+  .score-total div span { color: var(--muted); font-size: 11px; font-weight: 400; }
+  .table-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  @media (max-width: 600px) {
+    .score-dialog { width: 100%; max-width: 100%; max-height: calc(100dvh - 24px); margin: auto 0 0; border-radius: 18px 18px 0 0; border-bottom: 0; }
+    .score-total { padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+  }
 </style>
+
+<script>
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLButtonElement>('[data-score-dialog]');
+    if (!trigger) return;
+    const dialog = document.getElementById(trigger.dataset.scoreDialog ?? '');
+    if (dialog instanceof HTMLDialogElement) dialog.showModal();
+  });
+
+  document.querySelectorAll<HTMLDialogElement>('.score-dialog').forEach((dialog) => {
+    dialog.addEventListener('click', (event) => {
+      if (event.target !== dialog) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right
+        || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    });
+  });
+</script>

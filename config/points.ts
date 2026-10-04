@@ -1,10 +1,10 @@
-import type { OfficialRace, RaceResult } from '../src/types';
+import type { BonusDetail, OfficialRace, RaceResult } from '../src/types';
 
-type PointsSystem = {
+export type PointsSystem = {
   positions: readonly number[];
   poleBonus: number;
   fastestLapBonus: number;
-  customBonus?: (race: OfficialRace) => Record<string, number>;
+  customBonus?: (race: OfficialRace) => Record<string, BonusDetail[]>;
 };
 
 export const pointsSystems = {
@@ -23,8 +23,10 @@ export const pointsSystems = {
     poleBonus: 1,
     fastestLapBonus: 1,
     customBonus: (race: OfficialRace) => {
-      const bonuses: Record<string, number> = {};
-      const award = (driverId: string) => { bonuses[driverId] = (bonuses[driverId] ?? 0) + 1; };
+      const bonuses: Record<string, BonusDetail[]> = {};
+      const award = (driverId: string, reason: string) => {
+        (bonuses[driverId] ??= []).push({ reason, points: 1 });
+      };
       const classified = race.results.filter((result) => result.position > 0 && result.status !== 'disqualified');
 
       const mostImproved = classified
@@ -33,16 +35,16 @@ export const pointsSystems = {
           !best || result.startPosition - result.position > best.startPosition - best.position
             || (result.startPosition - result.position === best.startPosition - best.position
               && result.position < best.position) ? result : best, undefined);
-      if (mostImproved) award(mostImproved.driverId);
+      if (mostImproved) award(mostImproved.driverId, '名次提升最多');
 
       const cleanest = classified.reduce<RaceResult | undefined>((best, result) =>
         !best || result.incidents < best.incidents
           || (result.incidents === best.incidents && result.position < best.position)
           ? result : best, undefined);
-      if (cleanest) award(cleanest.driverId);
+      if (cleanest) award(cleanest.driverId, '事故最少');
 
       for (const result of classified) {
-        if (result.position >= 11 && result.status === 'finished') award(result.driverId);
+        if (result.position >= 11 && result.status === 'finished') award(result.driverId, 'P11 起完赛奖励');
       }
       return bonuses;
     },

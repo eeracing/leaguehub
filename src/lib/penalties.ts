@@ -52,16 +52,17 @@ export function applyPenalties(race: Race, penalties: RacePenalty[]): OfficialRa
       results[index] = {
         ...results[index],
         status: 'disqualified',
-        reasonOut: penalty.reason ?? '取消资格',
       };
     }
   }
 
   const classified = results.filter(
-    (result) => result.status !== 'disqualified' && result.finishPosition > 0,
+    (result) => result.status !== 'disqualified'
+      && Number.isInteger(result.finishPosition) && result.finishPosition > 0,
   );
   const unclassified = results.filter(
-    (result) => result.status !== 'disqualified' && result.finishPosition < 0,
+    (result) => result.status !== 'disqualified'
+      && (!Number.isInteger(result.finishPosition) || result.finishPosition <= 0),
   );
   const disqualified = results.filter((result) => result.status === 'disqualified');
 

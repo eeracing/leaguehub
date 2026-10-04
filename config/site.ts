@@ -28,7 +28,7 @@ export const config = {
     wins: true,
     poles: true,
     fastestLaps: true,
-    incidents: false,
+    incidents: true,
     standingsLimit: 10,
     latestResultsLimit: 10,
   } satisfies DisplayOptions,

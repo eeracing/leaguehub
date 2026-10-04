@@ -110,12 +110,17 @@ export type OfficialRace = Race & {
   penalties: RacePenalty[];
 };
 
+export type BonusDetail = {
+  reason: string;
+  points: number;
+};
+
 export type ChampionshipPoints = {
   driverId: string;
   positionPoints: number;
   poleBonus: number;
   fastestLapBonus: number;
-  customBonus: number;
+  customBonusDetails: BonusDetail[];
   penalty: number;
   points: number;
 };

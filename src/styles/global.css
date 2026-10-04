@@ -16,6 +16,8 @@
   --row-hover: #e9ebf0;
   --table-ink: #4c5562;
   --accent-text: var(--accent);
+  --gain: #287044;
+  --loss: #ac413c;
   --fastest: #7a238c;
   --fastest-bg: #f4e7f7;
   --shell-width: 92rem;
@@ -36,6 +38,8 @@
     --row-hover: #303640;
     --table-ink: #cbd0d9;
     --accent-text: color-mix(in srgb, var(--accent) 42%, white);
+    --gain: #91cda5;
+    --loss: #ecaaa3;
     --fastest: #e1a2eb;
     --fastest-bg: #433047;
   }
@@ -54,6 +58,8 @@
   --row-hover: #303640;
   --table-ink: #cbd0d9;
   --accent-text: color-mix(in srgb, var(--accent) 42%, white);
+  --gain: #91cda5;
+  --loss: #ecaaa3;
   --fastest: #e1a2eb;
   --fastest-bg: #433047;
 }
@@ -182,7 +188,6 @@ tbody tr { transition: background .15s ease; }
 .results-table tr.has-penalty td { height: 76px; padding-block: 11px; }
 .results-table .driver { min-width: 300px; white-space: normal; }
 .position-adjustment { display: block; margin-top: 3px; color: var(--faint); font-size: 10px; }
-.custom-bonus { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
 .certificate-link { display: block; margin-top: 5px; color: var(--accent-text); font-size: 11px; font-weight: 700; line-height: 1.35; white-space: nowrap; text-decoration: underline; text-underline-offset: 2px; }
 .certificate-link:hover { color: var(--ink); }
 .penalty-list { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; }
