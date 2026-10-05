@@ -186,7 +186,8 @@ tbody tr { transition: background .15s ease; }
 .points strong { color: var(--accent-text); font-size: 20px; font-weight: 750; }
 .lap-time.fastest { color: var(--fastest); font-weight: 700; }
 .fl-badge { display: inline-block; margin-left: 8px; padding: 3px 6px; color: var(--fastest); background: var(--fastest-bg); font-size: 10px; font-weight: 700; }
-.results-table .driver { min-width: 220px; white-space: normal; }
+.results-table .driver { width: 1%; min-width: 120px; max-width: 160px; padding-inline: 12px; white-space: normal; overflow-wrap: anywhere; }
+.results-table .driver strong { display: block; max-width: 136px; padding-block: 10px; }
 .certificate-link { display: block; margin-top: 5px; color: var(--accent-text); font-size: 11px; font-weight: 700; line-height: 1.35; white-space: nowrap; text-decoration: underline; text-underline-offset: 2px; }
 .certificate-link:hover { color: var(--ink); }
 
