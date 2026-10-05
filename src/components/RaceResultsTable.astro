@@ -1,5 +1,6 @@
 ---
 import ResultDetailsDialog from './ResultDetailsDialog.astro';
+import TableScroll from './TableScroll.astro';
 import { getFastestLap } from '../lib/points';
 import { certificateUrl } from '../lib/certificates';
 import { positionChange, resultStatus, validPosition } from '../lib/result-presentation';
@@ -46,7 +47,7 @@ function signedPoints(points: number): string {
   return points > 0 ? `+${numberFormat.format(points)}` : numberFormat.format(points);
 }
 ---
-<div class="table-scroll" tabindex="0" role="region" aria-label="正赛成绩，可横向滚动">
+<TableScroll label="正赛成绩，可横向滚动">
   <table class="results-table">
     <thead><tr><th scope="col" class="pos">排名</th><th scope="col" class="number">车号</th><th scope="col" class="driver">车手</th><th scope="col" class="grid-column">发车位</th><th scope="col" class="change-column">变化</th><th scope="col">赛车</th><th scope="col">圈数</th><th scope="col">完赛状态</th><th scope="col">时间差</th><th scope="col">最快圈</th>{showIncidents && <th scope="col" class="incidents-column">事故</th>}<th scope="col" class="penalty-cell">处罚</th><th scope="col" class="points">积分</th></tr></thead>
     <tbody>{results.map((result) => {
@@ -110,7 +111,7 @@ function signedPoints(points: number): string {
       </tr>;
     })}</tbody>
   </table>
-</div>
+</TableScroll>
 
 <style>
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }

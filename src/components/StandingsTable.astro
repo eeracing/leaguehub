@@ -1,35 +1,51 @@
 ---
 import type { SeriesView } from '../types';
+import TableScroll from './TableScroll.astro';
 interface Props { series: SeriesView; limit?: number }
 const { series, limit } = Astro.props;
 const standings = limit ? series.standings.slice(0, limit) : series.standings;
 const completedRounds = series.data.rounds.filter((round) => series.races.some((race) => race.roundId === round.id));
 ---
-<div class="table-scroll" tabindex="0" role="region" aria-label={`${series.config.name}积分榜，可横向滚动`}>
+<TableScroll label={`${series.config.name}积分榜，可横向滚动，车手列固定`}>
   <table class="standings-table">
     <thead><tr>
       <th scope="col" class="pos">排名</th>
-      {series.display.carNumber && <th scope="col" class="number">车号</th>}
       <th scope="col" class="driver">车手</th>
+      <th scope="col" class="points">总积分</th>
+      {series.display.carNumber && <th scope="col" class="number">车号</th>}
       {series.display.car && <th scope="col" class="car">赛车</th>}
       {completedRounds.map((round) => <th scope="col" class="round">第{round.round}轮</th>)}
       {series.display.wins && <th scope="col">分站冠军</th>}
       {series.display.poles && <th scope="col">杆位</th>}
       {series.display.fastestLaps && <th scope="col">最快圈</th>}
-      <th scope="col" class="points">积分</th>
     </tr></thead>
     <tbody>
       {standings.map((standing) => <tr>
         <td class="pos"><strong>{standing.position}</strong></td>
-        {series.display.carNumber && <td class="number">#{standing.carNumber}</td>}
         <td class="driver"><strong>{standing.driver}</strong></td>
+        <td class="points"><strong>{standing.points}</strong></td>
+        {series.display.carNumber && <td class="number">#{standing.carNumber}</td>}
         {series.display.car && <td class="car">{standing.car}</td>}
         {completedRounds.map((round) => <td class="round">{standing.roundPoints[round.id] ?? '—'}</td>)}
         {series.display.wins && <td>{standing.wins}</td>}
         {series.display.poles && <td>{standing.poles}</td>}
         {series.display.fastestLaps && <td>{standing.fastestLaps}</td>}
-        <td class="points"><strong>{standing.points}</strong></td>
       </tr>)}
     </tbody>
   </table>
-</div>
+</TableScroll>
+
+<style>
+  .standings-table { --driver-width: clamp(120px, 30vw, 220px); }
+  .standings-table .pos { width: 56px; min-width: 56px; padding-inline: 8px; }
+  .standings-table .driver {
+    position: sticky; left: 0; z-index: 2; background: var(--surface);
+    width: var(--driver-width); min-width: var(--driver-width); max-width: var(--driver-width);
+    padding-inline: 12px; white-space: normal; overflow-wrap: anywhere;
+  }
+  .standings-table .driver strong { display: block; max-width: calc(var(--driver-width) - 24px); padding-block: 10px; }
+  .standings-table tbody tr { background: var(--surface); }
+  .standings-table tbody tr:hover { background: var(--row-hover); }
+  .standings-table tbody .driver { background: inherit; }
+  .standings-table .points { width: 76px; min-width: 76px; padding-inline: 10px; }
+</style>

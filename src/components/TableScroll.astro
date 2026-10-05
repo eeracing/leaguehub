@@ -1,0 +1,29 @@
+---
+interface Props { label: string }
+const { label } = Astro.props;
+---
+<div data-scroll-table>
+  <p class="scroll-hint" hidden>向右滑动查看更多 <span aria-hidden="true">→</span></p>
+  <div class="table-scroll" tabindex="0" role="region" aria-label={label}>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .scroll-hint { margin: 0 0 10px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-scroll-table]').forEach((container) => {
+    const region = container.querySelector<HTMLElement>('.table-scroll');
+    const hint = container.querySelector<HTMLElement>('.scroll-hint');
+    const table = container.querySelector('table');
+    if (!region || !hint || !table) return;
+
+    const updateHint = () => { hint.hidden = region.scrollWidth <= region.clientWidth + 1; };
+    const observer = new ResizeObserver(updateHint);
+    observer.observe(region);
+    observer.observe(table);
+    updateHint();
+  });
+</script>
