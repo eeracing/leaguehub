@@ -49,7 +49,7 @@ function signedPoints(points: number): string {
 ---
 <TableScroll label="正赛成绩，可横向滚动">
   <table class="results-table">
-    <thead><tr><th scope="col" class="pos">排名</th><th scope="col" class="number">车号</th><th scope="col" class="driver">车手</th><th scope="col" class="grid-column">发车位</th><th scope="col" class="change-column">变化</th><th scope="col">赛车</th><th scope="col">圈数</th><th scope="col">完赛状态</th><th scope="col">时间差</th><th scope="col">最快圈</th>{showIncidents && <th scope="col" class="incidents-column">事故</th>}<th scope="col" class="penalty-cell">处罚</th><th scope="col" class="points">积分</th></tr></thead>
+    <thead><tr><th scope="col" class="pos">排名</th><th scope="col" class="number">车号</th><th scope="col" class="driver">车手</th><th scope="col" class="grid-column">发车位</th><th scope="col" class="change-column">变化</th><th scope="col">赛车</th><th scope="col" class="laps-column">圈数</th><th scope="col">完赛状态</th><th scope="col">时间差</th><th scope="col">最快圈</th>{showIncidents && <th scope="col" class="incidents-column">事故</th>}<th scope="col" class="penalty-cell">处罚</th><th scope="col" class="points">积分</th></tr></thead>
     <tbody>{results.map((result) => {
       const penalties = race.penalties.filter((penalty) => penalty.driverId === result.driverId);
       const score = race.championshipPoints.find((entry) => entry.driverId === result.driverId);
@@ -74,7 +74,7 @@ function signedPoints(points: number): string {
         <td class="number">#{result.carNumber}</td>
         <td class="driver"><strong>{result.driver}</strong></td>
         <td class="grid-column"><span class="grid-position">{validPosition(result.startPosition) ? result.startPosition : '—'}</span></td>
-        <td class="change-column">{change ? <span class:list={['position-change', change.direction]} title={change.label}><span aria-hidden="true">{change.text}</span><span class="sr-only">{change.label}</span></span> : <span class="no-change"><span aria-hidden="true">—</span><span class="sr-only">无有效名次变化</span></span>}</td><td class="car">{result.car}</td><td>{result.laps}</td>
+        <td class="change-column">{change ? <span class:list={['position-change', change.direction]} title={change.label}><span aria-hidden="true">{change.text}</span><span class="sr-only">{change.label}</span></span> : <span class="no-change"><span aria-hidden="true">—</span><span class="sr-only">无有效名次变化</span></span>}</td><td class="car">{result.car}</td><td class="laps-column">{result.laps}</td>
         <td class="race-status"><span>{status.label}</span>{status.reason && <small>{status.reasonLabel}：{status.reason}</small>}</td>
         <td>{result.gap}</td>
         <td class:list={['lap-time', { fastest: fastest?.driverId === result.driverId }]}>{result.bestLap}{fastest?.driverId === result.driverId && <span class="fl-badge">全场最快</span>}</td>
@@ -120,6 +120,7 @@ function signedPoints(points: number): string {
   .podium-crown.gold { color: #d9a528; }
   .podium-crown.silver { color: #a8b2c1; }
   .podium-crown.bronze { color: #bb7c48; }
+  .number, .laps-column { text-align: center; }
   .grid-column, .change-column { text-align: center; padding-inline: 10px; }
   .ranked-position { min-width: 28px; min-height: 28px; padding: 4px 6px; border-radius: 5px; background: var(--surface-muted); color: var(--ink); }
   .grid-position { color: var(--table-ink); font-size: 12px; font-weight: 650; }

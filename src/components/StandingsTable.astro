@@ -15,9 +15,9 @@ const completedRounds = series.data.rounds.filter((round) => series.races.some((
       {series.display.carNumber && <th scope="col" class="number">车号</th>}
       {series.display.car && <th scope="col" class="car">赛车</th>}
       {completedRounds.map((round) => <th scope="col" class="round">第{round.round}轮</th>)}
-      {series.display.wins && <th scope="col">分站冠军</th>}
-      {series.display.poles && <th scope="col">杆位</th>}
-      {series.display.fastestLaps && <th scope="col">最快圈</th>}
+      {series.display.wins && <th scope="col" class="stat">分站冠军</th>}
+      {series.display.poles && <th scope="col" class="stat">杆位</th>}
+      {series.display.fastestLaps && <th scope="col" class="stat">最快圈</th>}
     </tr></thead>
     <tbody>
       {standings.map((standing) => <tr>
@@ -27,9 +27,9 @@ const completedRounds = series.data.rounds.filter((round) => series.races.some((
         {series.display.carNumber && <td class="number">#{standing.carNumber}</td>}
         {series.display.car && <td class="car">{standing.car}</td>}
         {completedRounds.map((round) => <td class="round">{standing.roundPoints[round.id] ?? '—'}</td>)}
-        {series.display.wins && <td>{standing.wins}</td>}
-        {series.display.poles && <td>{standing.poles}</td>}
-        {series.display.fastestLaps && <td>{standing.fastestLaps}</td>}
+        {series.display.wins && <td class="stat">{standing.wins}</td>}
+        {series.display.poles && <td class="stat">{standing.poles}</td>}
+        {series.display.fastestLaps && <td class="stat">{standing.fastestLaps}</td>}
       </tr>)}
     </tbody>
   </table>
@@ -38,6 +38,7 @@ const completedRounds = series.data.rounds.filter((round) => series.races.some((
 <style>
   .standings-table { --driver-width: clamp(120px, 30vw, 160px); }
   .standings-table .pos { width: 56px; min-width: 56px; padding-inline: 8px; }
+  .standings-table .number, .standings-table .stat { text-align: center; }
   .standings-table .driver {
     position: sticky; left: 0; z-index: 2; background: var(--surface);
     width: var(--driver-width); min-width: var(--driver-width); max-width: var(--driver-width);
