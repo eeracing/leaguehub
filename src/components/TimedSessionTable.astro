@@ -9,13 +9,13 @@ interface Props {
 const { session, gapLabel } = Astro.props;
 const fastestMs = Math.min(...session.results.map((result) => result.bestLapMs));
 ---
-<div class="table-scroll">
+<div class="table-scroll" tabindex="0" role="region" aria-label={`单圈成绩，${gapLabel}，可横向滚动`}>
   <table class="results-table">
-    <thead><tr><th class="pos">排名</th><th class="driver">车手</th><th>车号</th><th>赛车</th><th>最快圈</th><th>{gapLabel}</th></tr></thead>
+    <thead><tr><th scope="col" class="pos">排名</th><th scope="col" class="number">车号</th><th scope="col" class="driver">车手</th><th scope="col">赛车</th><th scope="col">最快圈</th><th scope="col">{gapLabel}</th></tr></thead>
     <tbody>{session.results.map((result) => <tr>
       <td class="pos"><strong>{result.position > 0 ? result.position : '—'}</strong></td>
+      <td class="number">#{result.carNumber}</td>
       <td class="driver"><strong>{result.driver}</strong></td>
-      <td>#{result.carNumber}</td>
       <td class="car">{result.car}</td>
       <td class:list={['lap-time', { fastest: Number.isFinite(fastestMs) && result.bestLapMs === fastestMs }]}>{result.bestLap}</td>
       <td>{result.gap}</td>

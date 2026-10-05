@@ -1,0 +1,70 @@
+---
+import type { RaceResult } from '../types';
+
+interface Props {
+  id: string;
+  title: string;
+  eyebrow: string;
+  result: Pick<RaceResult, 'driver' | 'carNumber'>;
+  summaryLabel: string;
+  summaryValue: string | number;
+  summaryUnit?: string;
+}
+const { id, title, eyebrow, result, summaryLabel, summaryValue, summaryUnit } = Astro.props;
+---
+<dialog class="result-dialog" id={id} aria-labelledby={`${id}-title`} aria-describedby={`${id}-driver`}>
+  <header class="details-header">
+    <div><p class="details-eyebrow">{eyebrow}</p><h3 id={`${id}-title`}>{title}</h3></div>
+    <form method="dialog"><button class="details-close" aria-label={`关闭${title}`}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" /></svg></button></form>
+  </header>
+  <div class="details-driver" id={`${id}-driver`}><span>#{result.carNumber}</span><strong>{result.driver}</strong></div>
+  <div class="details-body"><slot /></div>
+  <footer class:list={['details-total', { 'text-total': !summaryUnit }]}><span>{summaryLabel}</span><div><strong>{summaryValue}</strong>{summaryUnit && <span>{summaryUnit}</span>}</div></footer>
+</dialog>
+
+<style>
+  .result-dialog { width: min(400px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0; overflow-y: auto; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 24px 80px #0005; font-variant-numeric: tabular-nums; white-space: normal; text-align: left; }
+  .result-dialog::backdrop { background: #0006; backdrop-filter: blur(4px); }
+  .details-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 24px 16px; }
+  .details-eyebrow { margin: 0 0 6px; color: var(--faint); font-size: 10px; letter-spacing: .1em; }
+  .details-header h3 { margin: 0; font-size: 21px; font-weight: 750; }
+  .details-close { display: grid; width: 36px; height: 36px; place-items: center; padding: 0; color: var(--muted); background: var(--surface-muted); border: 0; border-radius: 50%; cursor: pointer; }
+  .details-close:hover { background: var(--row-hover); color: var(--ink); }
+  .details-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+  .details-driver { margin-inline: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .details-driver > span { margin-right: 8px; color: var(--faint); font-size: 12px; }
+  .details-driver > strong { color: var(--ink); font-size: 14px; }
+  .details-body { padding: 12px 24px 20px; }
+  .details-body :global(dl) { margin: 0; font-size: 13px; }
+  .details-body :global(dl > div) { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-block: 9px; }
+  .details-body :global(dt) { overflow-wrap: anywhere; }
+  .details-body :global(dd) { margin: 0; flex-shrink: 0; font-weight: 650; }
+  .details-body :global(.details-note) { margin: 12px 0 0; padding: 10px 12px; border-radius: 6px; background: var(--surface-muted); color: var(--muted); font-size: 12px; line-height: 1.6; }
+  .details-total { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 24px; background: var(--surface-muted); border-top: 1px solid var(--line); font-size: 13px; font-weight: 650; }
+  .details-total div { display: flex; align-items: baseline; gap: 6px; }
+  .details-total strong { color: var(--accent-text); font-size: 32px; line-height: 1.2; }
+  .details-total.text-total strong { font-size: 16px; }
+  .details-total div span { color: var(--muted); font-size: 11px; font-weight: 400; }
+  @media (max-width: 600px) {
+    .result-dialog { width: 100%; max-width: 100%; max-height: calc(100dvh - 24px); margin: auto 0 0; border-radius: 18px 18px 0 0; border-bottom: 0; }
+    .details-total { padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+  }
+</style>
+
+<script>
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLButtonElement>('[data-result-dialog]');
+    if (!trigger) return;
+    const dialog = document.getElementById(trigger.dataset.resultDialog ?? '');
+    if (dialog instanceof HTMLDialogElement) dialog.showModal();
+  });
+  document.querySelectorAll<HTMLDialogElement>('.result-dialog').forEach((dialog) => {
+    dialog.addEventListener('click', (event) => {
+      if (event.target !== dialog) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right
+        || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    });
+  });
+</script>

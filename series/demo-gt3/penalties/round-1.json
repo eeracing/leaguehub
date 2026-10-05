@@ -1,0 +1,51 @@
+{
+  "penalties": [
+    {
+      "type": "time",
+      "driverId": "99000001",
+      "seconds": 3,
+      "reason": "示例：超出赛道边界"
+    },
+    {
+      "type": "time",
+      "driverId": "99000001",
+      "seconds": 5,
+      "reason": "示例：不安全返回赛道"
+    },
+    {
+      "type": "time",
+      "driverId": "99000003",
+      "seconds": 8,
+      "reason": "示例：引发可避免的碰撞"
+    },
+    {
+      "type": "time",
+      "driverId": "99000008",
+      "seconds": 2,
+      "reason": "示例：超出赛道边界"
+    },
+    {
+      "type": "points",
+      "driverId": "99000008",
+      "points": 2,
+      "reason": "示例：违反赛事行为规范"
+    },
+    {
+      "type": "position",
+      "driverId": "99000017",
+      "positions": 5,
+      "reason": "示例：违规超车后未归还位置"
+    },
+    {
+      "type": "points",
+      "driverId": "99000009",
+      "points": 3,
+      "reason": "示例：违反赛后检查规定"
+    },
+    {
+      "type": "disqualification",
+      "driverId": "99000020",
+      "reason": "示例：赛车不符合技术规定"
+    }
+  ]
+}

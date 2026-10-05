@@ -171,31 +171,23 @@ a.sponsor-card:hover { border-color: var(--line); }
 .section-nav a { color: var(--muted); font-size: 13px; font-weight: 650; white-space: nowrap; }
 .section-nav a:hover { color: var(--accent-text); }
 .table-scroll { overflow-x: auto; border-top: 2px solid var(--accent); background: var(--surface); }
+.table-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 table { width: 100%; border-collapse: collapse; white-space: nowrap; font-variant-numeric: tabular-nums; }
 th { height: 46px; padding: 0 15px; color: var(--muted); font-size: 11px; font-weight: 700; text-align: left; border-bottom: 1px solid var(--line-strong); }
 td { height: 56px; padding: 0 15px; color: var(--table-ink); font-size: 13px; border-bottom: 1px solid var(--line); }
 tbody tr { transition: background .15s ease; }
 .pos { width: 96px; min-width: 96px; text-align: center; }
 .driver strong { color: var(--ink); font-size: 13px; font-weight: 700; }
-.number, .car-number { color: var(--faint); }
-.car-number { margin-right: 10px; }
+.number { color: var(--faint); }
 .car { max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
 .round { text-align: center; }
 .points { text-align: right; }
 .points strong { color: var(--accent-text); font-size: 20px; font-weight: 750; }
 .lap-time.fastest { color: var(--fastest); font-weight: 700; }
 .fl-badge { display: inline-block; margin-left: 8px; padding: 3px 6px; color: var(--fastest); background: var(--fastest-bg); font-size: 10px; font-weight: 700; }
-.results-table tr.has-penalty td { height: 76px; padding-block: 11px; }
-.results-table .driver { min-width: 300px; white-space: normal; }
-.position-adjustment { display: block; margin-top: 3px; color: var(--faint); font-size: 10px; }
+.results-table .driver { min-width: 220px; white-space: normal; }
 .certificate-link { display: block; margin-top: 5px; color: var(--accent-text); font-size: 11px; font-weight: 700; line-height: 1.35; white-space: nowrap; text-decoration: underline; text-underline-offset: 2px; }
 .certificate-link:hover { color: var(--ink); }
-.penalty-list { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; }
-.penalty-note { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
-.penalty-note::before { content: ''; width: 4px; height: 4px; flex: 0 0 auto; background: var(--accent); }
-.penalty-note strong { color: var(--ink); font-size: 11px; }
-.penalty-reason { color: var(--faint); }
-.penalty-reason::before { content: '·'; margin-right: 5px; }
 
 /* 赛程 */
 .schedule-row { display: grid; grid-template-columns: 72px minmax(260px, 1fr) 170px 110px; gap: 24px; align-items: center; min-height: 82px; padding-right: 8px; border-bottom: 1px solid var(--line); transition: background .15s ease; }
