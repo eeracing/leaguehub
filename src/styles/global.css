@@ -170,7 +170,8 @@ a.sponsor-card:hover { border-color: var(--line); }
 .section-nav .shell { height: 100%; display: flex; align-items: center; gap: 32px; overflow-x: auto; }
 .section-nav a { color: var(--muted); font-size: 13px; font-weight: 650; white-space: nowrap; }
 .section-nav a:hover { color: var(--accent-text); }
-.table-scroll { overflow-x: auto; border-top: 2px solid var(--accent); background: var(--surface); }
+/* Keep absolutely positioned accessibility text inside the scroll container. */
+.table-scroll { position: relative; overflow-x: auto; border-top: 2px solid var(--accent); background: var(--surface); }
 .table-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 table { width: 100%; border-collapse: collapse; white-space: nowrap; font-variant-numeric: tabular-nums; }
 th { height: 46px; padding: 0 15px; color: var(--muted); font-size: 11px; font-weight: 700; text-align: left; border-bottom: 1px solid var(--line-strong); }

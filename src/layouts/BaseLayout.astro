@@ -23,7 +23,7 @@ const canonicalUrl = canonical && Astro.site ? new URL(Astro.url.pathname, Astro
 <html lang={config.site.locale} style={`--accent: ${config.site.accent}`}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     <meta name="theme-color" content="#f3f2ee" />
