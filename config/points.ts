@@ -37,10 +37,12 @@ export const pointsSystems = {
               && result.position < best.position) ? result : best, undefined);
       if (mostImproved) award(mostImproved.driverId, '名次提升最多');
 
-      const cleanest = classified.reduce<RaceResult | undefined>((best, result) =>
-        !best || result.incidents < best.incidents
-          || (result.incidents === best.incidents && result.position < best.position)
-          ? result : best, undefined);
+      const cleanest = classified
+        .filter((result) => result.status === 'finished')
+        .reduce<RaceResult | undefined>((best, result) =>
+          !best || result.incidents < best.incidents
+            || (result.incidents === best.incidents && result.position < best.position)
+            ? result : best, undefined);
       if (cleanest) award(cleanest.driverId, '事故最少');
 
       for (const result of classified) {

@@ -79,7 +79,7 @@ display: {
 
 Rebuild after changing these settings.
 
-The `custom` points system in `config/points.ts` demonstrates unusual rules: P1–P10 score 32, 24, 18, 14, 12, 10, 8, 6, 4, 2; pole and fastest lap score 1 each; the most improved driver and the driver with the fewest incident points score 1 each; every finisher from P11 onward scores 1. Ties for the two individual bonuses go to the higher official finisher, and a position gain must be positive. Bonuses use official positions after penalties; disqualified drivers score zero. Set `pointsSystem: 'custom'` in a series configuration to use this example.
+The `custom` points system in `config/points.ts` demonstrates unusual rules: P1–P10 score 32, 24, 18, 14, 12, 10, 8, 6, 4, 2; pole and fastest lap score 1 each; the most improved driver and the driver with the fewest incident points score 1 each; every finisher from P11 onward scores 1. Only drivers with a valid official position and `status: 'finished'` are eligible for the fewest-incidents bonus; DNF and disqualified drivers are excluded, and no bonus is awarded if no eligible finisher exists. Ties for the two individual bonuses go to the driver with the higher official position, and a position gain must be positive. Bonuses use official positions after penalties; disqualified drivers score zero. Set `pointsSystem: 'custom'` in a series configuration to use this example.
 
 For other rules, add a points system with a `customBonus(race)` function returning bonuses keyed by driver ID. Return `{ reason: string, points: number }[]` for each awarded driver, for example `{ '12345': [{ reason: 'Most positions gained', points: 1 }, { reason: 'Fewest incident points', points: 1 }] }`. Omit `customBonus` for systems without custom rewards.
 
