@@ -5,11 +5,9 @@ type IracingResult = {
   cust_id: number;
   display_name: string;
   finish_position: number;
-  finish_position_in_class: number;
   starting_position: number;
   car_name: string;
   laps_complete: number;
-  laps_lead?: number | null;
   reason_out: string;
   reason_out_id: number;
   interval: number;
@@ -20,7 +18,6 @@ type IracingResult = {
 };
 
 type IracingSessionResult = {
-  simsession_number: number;
   simsession_name: string;
   simsession_type: number;
   simsession_type_name: string;
@@ -164,10 +161,8 @@ export function adaptIracingEventResult(input: unknown, roundId: string): EventS
         car: result.car_name,
         startPosition: positionFromIracing(result.starting_position),
         finishPosition: position,
-        classPosition: positionFromIracing(result.finish_position_in_class),
         position,
         laps: result.laps_complete,
-        lapsLed: result.laps_lead ?? 0,
         status: raceStatus(result),
         reasonOut: result.reason_out,
         time: formatDurationMs(timeMs ?? NaN, true),

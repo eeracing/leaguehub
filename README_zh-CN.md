@@ -55,7 +55,7 @@ Favicon 是 `public/` 下独立的静态图片。在 `config/site.ts` 的 `site.
 | `series/<slug>/eventresult-*.json` | 未经修改的 iRacing 比赛结果 API 响应 |
 | `series/<slug>/penalties/<roundId>.json` | 可选的该轮赛事仲裁决定 |
 
-系列赛的 `config.ts` 默认导出配置，包含 `id`、`name`、`shortName`、`slug` 和 `pointsSystem`；`slug` 必须与目录名相同，`pointsSystem` 必须引用 `config/points.ts` 中的键。可用 `display` 覆盖全站表格展示选项。比赛结果行不应手工写入配置。
+系列赛的 `config.ts` 默认导出配置，包含 `name`、`shortName`、`slug` 和 `pointsSystem`；`slug` 必须与目录名相同，`pointsSystem` 必须引用 `config/points.ts` 中的键。可用 `display` 覆盖全站表格展示选项。比赛结果行不应手工写入配置。
 
 需要使用赛会登记名称时，在系列赛目录添加可选的 `drivers.json`：
 
@@ -196,7 +196,7 @@ certificates: 'all',       // 所有取得正式名次的车手
 
 `src/lib/iracing-adapter.ts` 解析 Practice（练习赛）、Qualifying（排位赛）和 Race（正赛）。只有正赛参与处罚、锦标赛积分及官方最快圈统计；排位赛数据还用于确定正赛杆位。练习赛和排位赛不会改变当前轮次或下一场比赛的判定。
 
-适配器将 iRacing 的万分之一秒转换为显示文字和毫秒，将从零开始的有效名次转换为从一开始的名次（`-1` 仍表示无有效名次）。正赛保留发车和完赛名次、组别名次、领跑圈数、状态及原始退赛原因；计时场次保留车手、车号、赛车、最快圈和与场次最快圈的差距，无有效圈速显示“—”。车手以 iRacing `cust_id` 标识。
+适配器将 iRacing 的万分之一秒转换为显示文字和毫秒，将从零开始的有效名次转换为从一开始的名次（`-1` 仍表示无有效名次）。正赛保留发车和完赛名次、状态及原始退赛原因；计时场次保留车手、车号、赛车、最快圈和与场次最快圈的差距，无有效圈速显示“—”。车手以 iRacing `cust_id` 标识。
 
 `getStaticPaths()` 根据自动发现的配置和赛程生成页面。默认结果地址 `/racing/<slug>/results/<roundId>` 展示正赛；有相应场次数据时，另生成 `/qualifying` 和 `/practice` 子页面。三个场次共用比赛页头与切换导航，正赛表还显示发车位。
 

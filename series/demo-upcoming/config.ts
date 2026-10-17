@@ -1,7 +1,6 @@
 import type { SeriesConfig } from '../../src/types';
 
 export default {
-  id: 'demo-upcoming',
   name: 'GT4 冲刺杯',
   shortName: 'GT4',
   slug: 'demo-upcoming',

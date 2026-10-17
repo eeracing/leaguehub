@@ -9,11 +9,16 @@ export function getStaticPaths() {
       .filter((session) => view.eventSessions[race.roundId]?.[session])
       .map((session) => ({
         params: { series: seriesConfig.slug, round: race.roundId, session },
-        props: { seriesConfig, roundId: race.roundId, sessionKind: session },
+        props: {
+          seriesConfig,
+          display: view.display,
+          race,
+          round: view.data.rounds.find((round) => round.id === race.roundId)!,
+          sessions: view.eventSessions[race.roundId],
+          sessionKind: session,
+        },
       })));
   });
 }
-
-const { seriesConfig, roundId, sessionKind } = Astro.props;
 ---
-<ResultPage seriesConfig={seriesConfig} roundId={roundId} sessionKind={sessionKind} />
+<ResultPage {...Astro.props} />

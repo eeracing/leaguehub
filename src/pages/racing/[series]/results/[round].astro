@@ -7,11 +7,15 @@ export function getStaticPaths() {
     const view = getSeriesView(seriesConfig);
     return view.races.map((race) => ({
       params: { series: seriesConfig.slug, round: race.roundId },
-      props: { seriesConfig, roundId: race.roundId },
+      props: {
+        seriesConfig,
+        display: view.display,
+        race,
+        round: view.data.rounds.find((round) => round.id === race.roundId)!,
+        sessions: view.eventSessions[race.roundId],
+      },
     }));
   });
 }
-
-const { seriesConfig, roundId } = Astro.props;
 ---
-<ResultPage seriesConfig={seriesConfig} roundId={roundId} sessionKind="race" />
+<ResultPage {...Astro.props} sessionKind="race" />

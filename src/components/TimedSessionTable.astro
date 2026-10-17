@@ -1,5 +1,6 @@
 ---
 import type { TimedSession } from '../types';
+import TableScroll from './TableScroll.astro';
 
 interface Props {
   session: TimedSession;
@@ -9,7 +10,7 @@ interface Props {
 const { session, gapLabel } = Astro.props;
 const fastestMs = Math.min(...session.results.map((result) => result.bestLapMs));
 ---
-<div class="table-scroll" tabindex="0" role="region" aria-label={`单圈成绩，${gapLabel}，可横向滚动`}>
+<TableScroll label={`单圈成绩，${gapLabel}，可横向滚动`}>
   <table class="results-table">
     <thead><tr><th scope="col" class="pos">排名</th><th scope="col" class="number">车号</th><th scope="col" class="driver">车手</th><th scope="col">赛车</th><th scope="col">最快圈</th><th scope="col">{gapLabel}</th></tr></thead>
     <tbody>{session.results.map((result) => <tr>
@@ -21,4 +22,4 @@ const fastestMs = Math.min(...session.results.map((result) => result.bestLapMs))
       <td>{result.gap}</td>
     </tr>)}</tbody>
   </table>
-</div>
+</TableScroll>

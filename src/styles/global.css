@@ -142,56 +142,13 @@ img { display: block; }
 .row-arrow { color: var(--accent-text); font-size: 19px; text-align: right; }
 
 /* 首页最近赛果速览 */
-.latest-result-strip {
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.latest-result-link {
-  display: grid;
-  grid-template-columns: minmax(80px, 1fr) minmax(0, auto) auto minmax(80px, 1fr);
-  align-items: center;
-  gap: 20px;
-  min-height: 48px;
-  padding-block: 10px;
-}
-.latest-result-label {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-.latest-result-title {
-  min-width: 0;
-  font-size: 13px;
-  font-weight: 650;
-  line-height: 1.5;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-.latest-result-meta {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
-  white-space: nowrap;
-}
+.latest-result-strip { background: var(--surface); border-bottom: 1px solid var(--line); }
+.latest-result-link { display: grid; grid-template-columns: minmax(80px, 1fr) minmax(0, auto) auto minmax(80px, 1fr); align-items: center; gap: 20px; min-height: 48px; padding-block: 10px; }
+.latest-result-label { color: var(--muted); font-size: 12px; font-weight: 650; white-space: nowrap; }
+.latest-result-title { min-width: 0; font-size: 13px; font-weight: 650; line-height: 1.5; text-align: center; overflow-wrap: anywhere; }
+.latest-result-meta { color: var(--muted); font-size: 12px; line-height: 1.5; white-space: nowrap; }
 .latest-result-layout { color: var(--muted); font-weight: 400; }
-.latest-result-action {
-  display: flex;
-  justify-self: end;
-  align-items: center;
-  gap: 12px;
-  color: var(--accent-text);
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-@media (max-width: 640px) {
-  .latest-result-link { grid-template-columns: minmax(0, 1fr) auto; min-height: 64px; gap: 6px 16px; }
-  .latest-result-label { grid-column: 1; grid-row: 1; font-size: 11px; }
-  .latest-result-meta { grid-column: 2; grid-row: 1; font-size: 11px; text-align: right; }
-  .latest-result-title { grid-column: 1; grid-row: 2; text-align: left; }
-  .latest-result-action { grid-column: 2; grid-row: 2; gap: 8px; font-size: 12px; }
-}
+.latest-result-action { display: flex; justify-self: end; align-items: center; gap: 12px; color: var(--accent-text); font-size: 13px; font-weight: 700; white-space: nowrap; }
 
 /* 最新结果与后续比赛 */
 .editorial-row { display: grid; grid-template-columns: 90px minmax(270px, 1.3fr) minmax(150px, .5fr) minmax(120px, .35fr) 24px; gap: 24px; align-items: center; min-height: 94px; padding: 14px 8px; border-bottom: 1px solid var(--line); transition: background .15s ease; }
@@ -404,6 +361,11 @@ tbody tr { transition: background .15s ease; }
   .championship-card { min-height: 0; padding: 24px; }
   .championship-card-identity h3 { font-size: clamp(25px, 7vw, 32px); }
   .championship-card-details { padding-top: 28px; }
+  .latest-result-link { grid-template-columns: minmax(0, 1fr) auto; min-height: 64px; gap: 6px 16px; }
+  .latest-result-label { grid-column: 1; grid-row: 1; font-size: 11px; }
+  .latest-result-meta { grid-column: 2; grid-row: 1; font-size: 11px; text-align: right; }
+  .latest-result-title { grid-column: 1; grid-row: 2; text-align: left; }
+  .latest-result-action { grid-column: 2; grid-row: 2; gap: 8px; font-size: 12px; }
   .editorial-row { grid-template-columns: 48px 1fr 20px; gap: 12px; min-height: 76px; }
   .event-data { display: none; }
   .event-series { font-size: 16px; }

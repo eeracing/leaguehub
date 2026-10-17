@@ -2,7 +2,6 @@ import type { DisplayOptions } from '../config/site';
 import type { pointsSystems } from '../config/points';
 
 export type SeriesConfig = {
-  id: string;
   name: string;
   shortName: string;
   slug: string;
@@ -37,10 +36,8 @@ export type RaceResult = {
   car: string;
   startPosition: number;
   finishPosition: number;
-  classPosition: number;
   position: number;
   laps: number;
-  lapsLed: number;
   status: RaceStatus;
   reasonOut: string;
   time: string;
@@ -153,7 +150,7 @@ export type SeriesView = {
   data: SeriesData;
   display: DisplayOptions;
   races: ScoredRace[];
-  eventSessions: Record<string, EventSessions>;
+  eventSessions: Record<string, Omit<EventSessions, 'race'>>;
   standings: Standing[];
   latestRace?: ScoredRace;
   latestRound?: Round;

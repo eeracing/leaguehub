@@ -1,7 +1,6 @@
 import type { SeriesConfig } from '../../src/types';
 
 export default {
-  id: 'demo-gt3',
   name: 'GT3 国际挑战赛',
   shortName: 'GT3',
   slug: 'demo-gt3',

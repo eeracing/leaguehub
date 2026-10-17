@@ -2,31 +2,29 @@
 import RaceResultsTable from './RaceResultsTable.astro';
 import TimedSessionTable from './TimedSessionTable.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getSeriesView } from '../lib/data';
 import { formatDate } from '../lib/format';
 import { getFastestLap } from '../lib/points';
 import { certificateResults } from '../lib/certificates';
-import type { SeriesConfig } from '../types';
+import type { Round, ScoredRace, SeriesConfig, SeriesView } from '../types';
 
 type SessionKind = 'race' | 'qualifying' | 'practice';
 
 interface Props {
   seriesConfig: SeriesConfig;
-  roundId: string;
+  display: SeriesView['display'];
+  race: ScoredRace;
+  round: Round;
+  sessions: SeriesView['eventSessions'][string];
   sessionKind: SessionKind;
 }
 
-const { seriesConfig, roundId, sessionKind } = Astro.props;
-const series = getSeriesView(seriesConfig);
-const race = series.races.find((item) => item.roundId === roundId)!;
-const round = series.data.rounds.find((item) => item.id === roundId)!;
-const sessions = series.eventSessions[roundId];
+const { seriesConfig, display, race, round, sessions, sessionKind } = Astro.props;
 const timedSession = sessionKind === 'race' ? undefined : sessions[sessionKind];
 const fastest = getFastestLap(race);
-const certificateDriverIds = certificateResults(series.config, race).map((result) => result.driverId);
+const certificateDriverIds = certificateResults(seriesConfig, race).map((result) => result.driverId);
 const sessionName = sessionKind === 'race' ? '正赛' : sessionKind === 'qualifying' ? '排位赛' : '练习赛';
-const description = `${series.config.name} · 第 ${round.round} 轮「${round.name}」${sessionName}结果，包含车手名次与圈速。比赛赛道：${round.track}。`;
-const resultUrl = `/racing/${series.config.slug}/results/${round.id}`;
+const description = `${seriesConfig.name} · 第 ${round.round} 轮「${round.name}」${sessionName}结果，包含车手名次与圈速。比赛赛道：${round.track}。`;
+const resultUrl = `/racing/${seriesConfig.slug}/results/${round.id}`;
 const tabs = [
   { kind: 'race', label: '正赛', href: resultUrl },
   { kind: 'qualifying', label: '排位赛', href: `${resultUrl}/qualifying` },
@@ -36,7 +34,7 @@ const tabs = [
 <BaseLayout title={sessionKind === 'race' ? `${round.name} 比赛结果` : `${round.name} ${sessionName}结果`} description={description}>
   <section class="result-hero">
     <div class="shell">
-      <a class="back-link" href={`/racing/${series.config.slug}`}>← {series.config.name}</a>
+      <a class="back-link" href={`/racing/${seriesConfig.slug}`}>← {seriesConfig.name}</a>
       <p class="eyebrow">第 {round.round} 轮 · {sessionKind === 'race' ? '正式比赛结果' : `${sessionName}结果`}</p>
       <h1>{round.name}</h1>
       <p>{round.track} · {round.layout}</p>
@@ -49,7 +47,7 @@ const tabs = [
   </section>
   <nav class="session-nav" aria-label="比赛场次导航">
     <div class="shell">
-      {tabs.map((tab) => sessions[tab.kind] && <a href={tab.href} class:list={{ active: sessionKind === tab.kind }} aria-current={sessionKind === tab.kind ? 'page' : undefined}>{tab.label}</a>)}
+      {tabs.map((tab) => (tab.kind === 'race' || sessions[tab.kind]) && <a href={tab.href} class:list={{ active: sessionKind === tab.kind }} aria-current={sessionKind === tab.kind ? 'page' : undefined}>{tab.label}</a>)}
     </div>
   </nav>
   {sessionKind === 'race' && <div class="winner-band">
@@ -62,7 +60,7 @@ const tabs = [
   <section class="content-section shell">
     <header class="section-heading"><div><p class="eyebrow">{sessionKind === 'race' ? '正式成绩' : '场次成绩'}</p><h2>{sessionKind === 'race' ? '比赛结果' : `${sessionName}结果`}</h2></div></header>
     {sessionKind === 'race'
-      ? <RaceResultsTable race={race} showIncidents={series.display.incidents} certificateDriverIds={certificateDriverIds} seriesSlug={series.config.slug} />
+      ? <RaceResultsTable race={race} showIncidents={display.incidents} certificateDriverIds={certificateDriverIds} seriesSlug={seriesConfig.slug} />
       : timedSession && <TimedSessionTable session={timedSession} gapLabel={sessionKind === 'qualifying' ? '与杆位差距' : '与全场最快差距'} />}
   </section>
 </BaseLayout>

@@ -1,5 +1,5 @@
 import { config, type DisplayOptions } from '../../config/site';
-import type { EventSessions, ScoredRace, SeriesConfig, SeriesData, SeriesView } from '../types';
+import type { ScoredRace, SeriesConfig, SeriesData, SeriesView } from '../types';
 import { adaptIracingEventResult } from './iracing-adapter';
 import { applyPenalties, parsePenaltyFile } from './penalties';
 import { calculateRacePoints } from './points';
@@ -48,15 +48,15 @@ function dataFile<T>(slug: string, file: string): T {
 
 function raceFiles(series: SeriesConfig, data: SeriesData): {
   races: ScoredRace[];
-  eventSessions: Record<string, EventSessions>;
+  eventSessions: SeriesView['eventSessions'];
 } {
   const races: ScoredRace[] = [];
-  const eventSessions: Record<string, EventSessions> = {};
+  const eventSessions: SeriesView['eventSessions'] = {};
   for (const round of data.rounds) {
     if (!round.resultFile) continue;
     const raw = dataFile<unknown>(series.slug, round.resultFile);
     const sessions = adaptIracingEventResult(raw, round.id);
-    eventSessions[round.id] = sessions;
+    eventSessions[round.id] = { qualifying: sessions.qualifying, practice: sessions.practice };
     const penaltyFile = penaltyModules[`../../series/${series.slug}/penalties/${round.id}.json`];
     const penalties = penaltyFile ? parsePenaltyFile(penaltyFile) : [];
     const officialRace = applyPenalties(sessions.race, penalties);
@@ -87,7 +87,6 @@ export function getSeriesView(series: SeriesConfig): SeriesView {
     results: withDriverNames(race.results, names),
   }));
   for (const sessions of Object.values(eventSessions)) {
-    sessions.race.results = withDriverNames(sessions.race.results, names);
     if (sessions.qualifying) sessions.qualifying.results = withDriverNames(sessions.qualifying.results, names);
     if (sessions.practice) sessions.practice.results = withDriverNames(sessions.practice.results, names);
   }
@@ -111,8 +110,4 @@ export function getSeriesView(series: SeriesConfig): SeriesView {
 
 export function getVisibleSeries(): SeriesView[] {
   return getVisibleSeriesConfigs().map(getSeriesView);
-}
-
-export function getRace(series: SeriesConfig, roundId: string): ScoredRace | undefined {
-  return getSeriesView(series).races.find((race) => race.roundId === roundId);
 }

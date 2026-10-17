@@ -55,7 +55,7 @@ The favicon is a separate static image in `public/`. Set its path with `site.fav
 | `series/<slug>/eventresult-*.json` | Unmodified iRacing race result API responses |
 | `series/<slug>/penalties/<roundId>.json` | Optional stewarding decisions for a round |
 
-Each series `config.ts` must export a default configuration with `id`, `name`, `shortName`, `slug`, and `pointsSystem`. The `slug` must match the directory name, and `pointsSystem` must reference a key in `config/points.ts`. Use `display` to override the site-wide table options. Do not enter race result rows manually in the configuration.
+Each series `config.ts` must export a default configuration with `name`, `shortName`, `slug`, and `pointsSystem`. The `slug` must match the directory name, and `pointsSystem` must reference a key in `config/points.ts`. Use `display` to override the site-wide table options. Do not enter race result rows manually in the configuration.
 
 To display registered names instead of iRacing names, add an optional `drivers.json` to the series directory:
 
@@ -196,7 +196,7 @@ Original iRacing JSON → adapter → penalties → official race results → po
 
 `src/lib/iracing-adapter.ts` parses Practice, Qualifying, and Race sessions. Only Race sessions affect penalties, championship points, and official fastest lap statistics. Qualifying results are also used to determine the race pole sitter. Practice and qualifying results do not affect which round is current or which race is next.
 
-The adapter converts iRacing time values from ten-thousandths of a second into display text and milliseconds. It converts valid zero-based positions to one-based positions (`-1` still means no valid position). Race results retain starting and finishing positions, class positions, laps led, status, and the original retirement reason. Timed sessions retain the driver, car number, car, fastest lap, and gap to the session's fastest lap; an invalid lap time is displayed as “—”. Drivers are identified by their iRacing `cust_id`.
+The adapter converts iRacing time values from ten-thousandths of a second into display text and milliseconds. It converts valid zero-based positions to one-based positions (`-1` still means no valid position). Race results retain starting and finishing positions, status, and the original retirement reason. Timed sessions retain the driver, car number, car, fastest lap, and gap to the session's fastest lap; an invalid lap time is displayed as “—”. Drivers are identified by their iRacing `cust_id`.
 
 `getStaticPaths()` generates pages from the discovered configurations and schedules. The default result route, `/racing/<slug>/results/<roundId>`, shows the race. When the corresponding session data exists, `/qualifying` and `/practice` subpages are also generated. The three session pages share a header and navigation; the race table also shows starting positions.
 
