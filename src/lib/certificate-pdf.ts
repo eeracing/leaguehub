@@ -3,11 +3,13 @@ import path from 'node:path';
 import PDFDocument from 'pdfkit';
 import sharp from 'sharp';
 import { config } from '../../config/site';
+import podiumArtwork from '../../assets/certificates/podium-titles.json';
+import laurelArtwork from '../../assets/certificates/laurel-wreath.json';
 import { formatDate } from './format';
 import type { RaceResult, Round, SeriesConfig } from '../types';
 
-const WIDTH = 792;
-const HEIGHT = 612;
+const WIDTH = 841.89;
+const HEIGHT = 595.28;
 const INK = '#17233c';
 const MUTED = '#637083';
 const fontPath = path.join(process.cwd(), 'assets/fonts/NotoSansCJKsc-Regular.otf');
@@ -76,7 +78,7 @@ export async function createCertificatePdf(series: SeriesConfig, round: Round, r
   const seasonName = series.seasonName?.trim();
   const logo = await logoImage(series.logo) ?? await logoImage(config.site.logo);
   const font = await readFile(fontPath);
-  const document = new PDFDocument({ size: [WIDTH, HEIGHT], margin: 0, compress: true, info: {
+  const document = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 0, compress: true, info: {
     Title: `${series.name} 第 ${round.round} 轮 · ${result.driver} · 第 ${result.position} 名`,
     Author: config.site.name,
     Subject: '正赛名次证书',
@@ -90,27 +92,62 @@ export async function createCertificatePdf(series: SeriesConfig, round: Round, r
   });
 
   document.rect(0, 0, WIDTH, HEIGHT).fill('#ffffff');
-  document.lineWidth(2).strokeColor(accent).rect(27, 27, 738, 558).stroke();
-  document.rect(27, 27, 738, 5).fill(accent);
-  if (logo) document.image(logo, 362, 46, { fit: [68, 68], align: 'center', valign: 'center' });
-  centeredFittedText(document, seasonName ? `${series.name} · ${seasonName}` : series.name, 122, 650, 27, 15, 10, INK);
-  document.strokeColor('#dce2eb').lineWidth(1).moveTo(125, 159).lineTo(667, 159).stroke();
+  document.lineWidth(2).strokeColor(accent).rect(28, 28, WIDTH - 56, HEIGHT - 56).stroke();
+  document.rect(28, 28, WIDTH - 56, 5).fill(accent);
+  if (logo) document.image(logo, (WIDTH - 64) / 2, 42, { fit: [64, 64], align: 'center', valign: 'center' });
+  centeredFittedText(document, seasonName ? `${series.name} · ${seasonName}` : series.name, 114, WIDTH - 140, 28, 16, 10, INK);
+  document.strokeColor('#dce2eb').lineWidth(1).moveTo(128, 150).lineTo(WIDTH - 128, 150).stroke();
 
-  document.fontSize(22).fillColor(INK).text('分站成绩证书', 70, 185, { width: 652, align: 'center' });
-  document.fontSize(9).fillColor(MUTED).text('RACE RESULT CERTIFICATE', 70, 216, { width: 652, align: 'center', characterSpacing: 1.2 });
-  document.fontSize(108).fillColor(accentText).text(`第 ${result.position} 名`, 76, 229, { width: 652, align: 'center' });
+  document.fontSize(22).fillColor(INK).text('分站成绩证书', 70, 174, { width: WIDTH - 140, align: 'center' });
+  document.fontSize(9).fillColor(MUTED).text('RACE RESULT CERTIFICATE', 70, 207, { width: WIDTH - 140, align: 'center', characterSpacing: 1.2 });
+  const podiumTitle = podiumArtwork.titles[String(result.position) as keyof typeof podiumArtwork.titles];
+  if (podiumTitle) {
+    const color = ({ 1: '#E3B442', 2: '#B3BECE', 3: '#D99360' } as Record<number, string>)[result.position];
+    const laurelScale = 0.22;
+    const [, laurelTop, laurelWidth, laurelHeight] = laurelArtwork.viewBox;
+    const laurelY = 244;
+    for (const side of ['left', 'right'] as const) {
+      const x = side === 'left' ? 83 : WIDTH - 83 - laurelWidth * laurelScale;
+      document.save().translate(x, laurelY - laurelTop * laurelScale).scale(laurelScale);
+      for (const outline of laurelArtwork.branches[side]) document.path(outline).fill(color);
+      document.restore();
+    }
+    const spacing = 6;
+    const titleWidth = WIDTH - 2 * (83 + laurelWidth / 2 * laurelScale + 18);
+    const scale = Math.min(96 / podiumArtwork.unitsPerEm, (titleWidth - spacing * (podiumTitle.glyphs.length - 1)) / podiumTitle.width);
+    const width = podiumTitle.width * scale + spacing * (podiumTitle.glyphs.length - 1);
+    const x = (WIDTH - width) / 2;
+    const baseline = laurelY + laurelHeight * laurelScale / 2
+      + (podiumTitle.bounds.minY + podiumTitle.bounds.maxY) * scale / 2;
+    // Fixed title outlines preserve the reference's DIN Condensed Bold on every build host.
+    document.markContent('Span', { actual: podiumTitle.text });
+    podiumTitle.glyphs.forEach((glyph, index) => {
+      if (!glyph.path) return;
+      document.save().translate(x + glyph.x * scale + index * spacing, baseline - glyph.y * scale)
+        .scale(scale, -scale).lineWidth(1.6 / scale).lineJoin('round')
+        .path(glyph.path).fillAndStroke(color, color).restore();
+    });
+    document.endMarkedContent();
+  } else {
+    centeredFittedText(document, `第 ${result.position} 名`, 218, WIDTH - 144, 145, 104, 32, accentText);
+  }
 
-  centeredFittedText(document, result.driver, 386, 660, 48, 31, 10, INK);
-  document.strokeColor(accent).lineWidth(2).moveTo(343, 446).lineTo(449, 446).stroke();
-  centeredFittedText(document, `在 ${round.name} 正赛中`, 460, 670, 36, 14, 10, INK);
+  centeredFittedText(document, result.driver, 374, WIDTH - 120, 48, 31, 10, INK);
+  document.strokeColor(accent).lineWidth(2).moveTo(WIDTH / 2 - 53, 434).lineTo(WIDTH / 2 + 53, 434).stroke();
+  centeredFittedText(document, `在 ${round.name} 正赛中`, 448, WIDTH - 130, 30, 14, 10, INK);
 
-  document.strokeColor('#dce2eb').lineWidth(1).moveTo(72, 500).lineTo(720, 500).stroke();
-  document.fontSize(9).fillColor(MUTED).text('比赛时间', 70, 513, { width: 205, align: 'center' });
-  document.fontSize(9).fillColor(MUTED).text('赛道', 294, 513, { width: 205, align: 'center' });
-  document.fontSize(9).fillColor(MUTED).text('参赛车辆', 518, 513, { width: 205, align: 'center' });
-  textWithin(document, formatDate(round.date), 70, 531, 205, 12, 9, INK, 'center');
-  textWithin(document, `${round.track} · ${round.layout}`, 294, 531, 205, 11, 9, INK, 'center');
-  textWithin(document, `#${result.carNumber} · ${result.car}`, 518, 531, 205, 11, 9, INK, 'center');
+  document.strokeColor('#dce2eb').lineWidth(1).moveTo(72, 484).lineTo(WIDTH - 72, 484).stroke();
+  const columnWidth = (WIDTH - 144 - 36) / 3;
+  const details = [
+    { label: '比赛时间', value: formatDate(round.date), size: 12 },
+    { label: '赛道', value: `${round.track} · ${round.layout}`, size: 11 },
+    { label: '参赛车辆', value: `#${result.carNumber} · ${result.car}`, size: 11 },
+  ];
+  details.forEach((detail, index) => {
+    const x = 72 + index * (columnWidth + 18);
+    document.fontSize(9).fillColor(MUTED).text(detail.label, x, 497, { width: columnWidth, align: 'center' });
+    textWithin(document, detail.value, x, 516, columnWidth, detail.size, 9, INK, 'center');
+  });
 
   document.end();
   return finished;
