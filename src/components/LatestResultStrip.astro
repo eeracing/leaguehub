@@ -20,10 +20,8 @@ const date = new Intl.DateTimeFormat(config.site.locale, {
 <section class="latest-result-strip" aria-label="最近赛果">
   <a class="latest-result-link shell" href={`/racing/${series.slug}/results/${round.id}`}>
     <span class="latest-result-label">最近赛果</span>
-    <div class="latest-result-event">
-      <strong>{series.shortName || series.name} · 第 {round.round} 轮 · {round.track}{layout && <span class="latest-result-layout"> · {layout}</span>}</strong>
-      <time class="latest-result-meta" datetime={round.date}>{date}</time>
-    </div>
+    <strong class="latest-result-title">{series.shortName || series.name} · 第 {round.round} 轮 · {round.track}{layout && <span class="latest-result-layout"> · {layout}</span>}</strong>
+    <time class="latest-result-meta" datetime={round.date}>{date}</time>
     <span class="latest-result-action">查看赛果 <span aria-hidden="true">→</span></span>
   </a>
 </section>
@@ -35,7 +33,7 @@ const date = new Intl.DateTimeFormat(config.site.locale, {
   }
   .latest-result-link {
     display: grid;
-    grid-template-columns: minmax(80px, 1fr) minmax(0, auto) minmax(80px, 1fr);
+    grid-template-columns: minmax(80px, 1fr) minmax(0, auto) auto minmax(80px, 1fr);
     align-items: center;
     gap: 20px;
     min-height: 48px;
@@ -47,16 +45,15 @@ const date = new Intl.DateTimeFormat(config.site.locale, {
     font-weight: 650;
     white-space: nowrap;
   }
-  .latest-result-event { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 4px 16px; min-width: 0; text-align: center; }
-  .latest-result-event strong {
+  .latest-result-title {
     min-width: 0;
     font-size: 13px;
     font-weight: 650;
     line-height: 1.5;
+    text-align: center;
     overflow-wrap: anywhere;
   }
   .latest-result-meta {
-    flex: 0 0 auto;
     color: var(--muted);
     font-size: 12px;
     line-height: 1.5;
@@ -76,9 +73,8 @@ const date = new Intl.DateTimeFormat(config.site.locale, {
   @media (max-width: 640px) {
     .latest-result-link { grid-template-columns: minmax(0, 1fr) auto; min-height: 64px; gap: 6px 16px; }
     .latest-result-label { grid-column: 1; grid-row: 1; font-size: 11px; }
-    .latest-result-event { display: contents; text-align: left; }
     .latest-result-meta { grid-column: 2; grid-row: 1; font-size: 11px; text-align: right; }
-    .latest-result-event strong { grid-column: 1; grid-row: 2; }
+    .latest-result-title { grid-column: 1; grid-row: 2; text-align: left; }
     .latest-result-action { grid-column: 2; grid-row: 2; gap: 8px; font-size: 12px; }
   }
 </style>
