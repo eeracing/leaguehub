@@ -1,6 +1,7 @@
 ---
 import { config } from '../../config/site';
 import SeriesCard from '../components/SeriesCard.astro';
+import LatestResultStrip from '../components/LatestResultStrip.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getVisibleSeries } from '../lib/data';
@@ -14,8 +15,11 @@ const latestResults = seriesList
 const nextRaces = seriesList
   .filter((series) => series.nextRound)
   .sort((a, b) => new Date(a.nextRound!.date).getTime() - new Date(b.nextRound!.date).getTime());
+const recentResult = latestResults[0];
 ---
 <BaseLayout description={`${config.site.name} 模拟赛车锦标赛积分榜、比赛结果与赛程。`}>
+  {config.home.latestResultStrip && recentResult?.latestRound && <LatestResultStrip series={recentResult.config} round={recentResult.latestRound} />}
+
   <section class="content-section home-championship shell">
     <SectionHeading as="h1" eyebrow={`${config.site.name} · ${config.season.name}`} title="锦标赛" />
     <div class="championship-grid">

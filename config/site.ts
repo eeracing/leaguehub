@@ -22,6 +22,9 @@ export const config = {
   season: {
     name: '2026 年第 1 赛季',
   },
+  home: {
+    latestResultStrip: true,
+  },
   display: {
     car: true,
     carNumber: true,
