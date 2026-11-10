@@ -21,7 +21,7 @@ function penaltyValue(penalty: RacePenalty) {
   if (penalty.type === 'points') {
     return `扣除 ${numberFormat.format(penalty.points)} 分`;
   }
-  return '取消资格';
+  return penaltyLabel(penalty);
 }
 
 function penaltySummary(penalties: RacePenalty[]): { text: string; totalLabel: string } {
@@ -40,6 +40,7 @@ function penaltyLabel(penalty: RacePenalty): string {
   if (penalty.type === 'time') return '罚时';
   if (penalty.type === 'position') return '罚退';
   if (penalty.type === 'points') return '扣分';
+  if (penalty.type === 'warning') return '警告';
   return '取消资格';
 }
 
@@ -85,7 +86,12 @@ function signedPoints(points: number): string {
               <span>{summary.text}</span>
             </button>
             <ResultDetailsDialog id={penaltyDialogId} title="处罚明细" eyebrow="本轮处罚" result={result} summaryLabel={summary.totalLabel} summaryValue={summary.text}>
-              <dl>{penalties.map((penalty) => <div><dt>{penaltyLabel(penalty)}<small class="penalty-detail-reason">{penalty.reason ?? '未提供原因'}</small></dt>{penalty.type !== 'disqualification' && <dd>{penaltyValue(penalty)}</dd>}</div>)}</dl>
+              <dl>{penalties.map((penalty) => (
+                <div>
+                  <dt>{penaltyLabel(penalty)}<small class="penalty-detail-reason">{penalty.reason ?? '未提供原因'}</small></dt>
+                  {penalty.type !== 'disqualification' && penalty.type !== 'warning' && <dd>{penaltyValue(penalty)}</dd>}
+                </div>
+              ))}</dl>
               {result.status === 'disqualified' && penalties.some((penalty) => penalty.type === 'time') && <p class="details-note">取消资格，罚时不再生效。</p>}
             </ResultDetailsDialog>
           </> : <span class="no-penalty" aria-label="无处罚">—</span>}

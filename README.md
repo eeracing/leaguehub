@@ -164,7 +164,7 @@ The demo GT3 series enables certificates for the top five. Public certificate li
 
 ### Penalty files
 
-Put stewarding decisions in `series/<slug>/penalties/<roundId>.json` and leave the original result file unchanged. Time penalties, position drops, points deductions, and disqualifications are supported. See the [penalty file reference](series/penalties.md) for the full JSON format (in Chinese).
+Put stewarding decisions in `series/<slug>/penalties/<roundId>.json` and leave the original result file unchanged. Time penalties, position drops, points deductions, disqualifications, and warnings are supported. See the [penalty file reference](series/penalties.md) for the full JSON format (in Chinese).
 
 Position changes and disqualifications take effect before points are calculated. A disqualified driver scores zero points for that round, including pole position and fastest lap bonuses; their lap times are also excluded from the official fastest lap statistics.
 

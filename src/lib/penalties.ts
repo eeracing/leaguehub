@@ -36,6 +36,9 @@ function validatePenalty(value: unknown, index: number): RacePenalty {
   if (penalty.type === 'disqualification') {
     return { ...base, type: 'disqualification' };
   }
+  if (penalty.type === 'warning') {
+    return { ...base, type: 'warning' };
+  }
   throw new Error(`Unsupported penalty type at index ${index}`);
 }
 

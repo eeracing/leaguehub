@@ -103,7 +103,11 @@ export type TimePenalty = PenaltyBase & {
   seconds: number;
 };
 
-export type RacePenalty = TimePenalty | PositionPenalty | PointsPenalty | DisqualificationPenalty;
+export type WarningPenalty = PenaltyBase & {
+  type: 'warning';
+};
+
+export type RacePenalty = TimePenalty | PositionPenalty | PointsPenalty | DisqualificationPenalty | WarningPenalty;
 
 export type PenaltyFile = {
   penalties: RacePenalty[];
